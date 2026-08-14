@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Good Foundations Materials</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div>
+    <div class="eyebrow">GOOD FOUNDATIONS</div>
+    <h1>Materials</h1>
+    <p>Manage the materials price book used by the estimator.</p>
+  </div>
+  <div class="top-actions">
+    <a class="ghost nav-btn" href="index.html">← Estimator</a>
+    <button class="primary" id="addMaterialRecord">+ Add material</button>
+  </div>
+</header>
+<main class="shell">
+  <section class="card">
+    <div class="section-head">
+      <div><span class="step">£</span><h2>Materials price book</h2></div>
+      <span id="materialsSaveState" class="save-state">Saved locally</span>
+    </div>
+    <div class="materials-toolbar">
+      <input id="materialsSearch" placeholder="Search materials..." autocomplete="off">
+      <button class="text-btn" id="resetMaterials">Restore original list</button>
+    </div>
+    <div class="table-wrap">
+      <table class="materials-admin-table">
+        <thead><tr><th>Description</th><th class="num">Cost price</th><th class="num">Sell price</th><th></th></tr></thead>
+        <tbody id="materialsAdminBody"></tbody>
+      </table>
+    </div>
+    <p class="muted materials-count" id="materialsCount"></p>
+  </section>
+</main>
+<script src="data.js"></script>
+<script src="materials.js"></script>
+</body>
+</html>
