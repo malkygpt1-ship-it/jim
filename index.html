@@ -6,6 +6,7 @@
 <title>Good Foundations Estimator</title>
 <script src="auth.js"></script>
 <link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="compact-output.css" />
 </head>
 <body>
 <header class="topbar">
@@ -55,10 +56,9 @@
   <section class="split">
     <section class="card">
       <div class="section-head"><div><span class="step">4</span><h2>Labour</h2></div></div>
-      <div class="grid cols-3">
+      <div class="grid cols-2 labour-grid">
         <label>Hours<input id="hours" type="number" min="0" step="0.5" value="26"></label>
-        <label>Cost / hour<input id="labourCost" type="number" min="0" step="0.01" value="8"></label>
-        <label>Sell / hour<input id="labourSell" type="number" min="0" step="0.01" value="20"></label>
+        <label>Rate / hour<input id="labourRate" type="number" min="0" step="0.01" value="20"></label>
       </div>
       <div class="subtotal"><span>Labour subtotal</span><strong id="labourSubtotal">£520.00</strong></div>
     </section>
@@ -70,7 +70,6 @@
       <div class="summary-row"><span>Labour</span><span id="sumLabour">£520.00</span></div>
       <div class="summary-row discount"><label>Discount %</label><input id="discount" type="number" min="0" max="100" step="1" value="0"></div>
       <div class="grand"><span>Total quotation</span><strong id="grandTotal">£520.00</strong></div>
-      <div class="margin-box"><span>Forecast gross margin</span><strong id="grossMargin">60.0%</strong><small id="profitText">£312.00 forecast gross profit</small></div>
     </section>
   </section>
 
