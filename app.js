@@ -1,6 +1,7 @@
 const DATA=window.GF_DATA||{materials:[],tools:[]};
 const $=s=>document.querySelector(s); const money=n=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(Number(n)||0);
 const state={materials:[],tools:[]};
+let activeSuggest=null;
 
 function fillLists(){
   $('#materialOptions').innerHTML=DATA.materials.map(x=>`<option value="${esc(x.name)}"></option>`).join('');
@@ -10,13 +11,28 @@ function esc(s){return String(s).replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;',
 function lookup(kind,name){return DATA[kind].find(x=>x.name===name)}
 function addRow(kind,row={name:'',qty:1,sell:0,cost:0}){state[kind].push(row);renderRows(kind);recalc();saveDraft()}
 function renderRows(kind){
- const body=$(kind==='materials'?'#materialsBody':'#toolsBody'); const list=kind==='materials'?'materialOptions':'toolOptions';
+ const body=$(kind==='materials'?'#materialsBody':'#toolsBody');
  body.innerHTML=state[kind].map((r,i)=>`<tr>
- <td><input class="row-input desc" list="${list}" data-kind="${kind}" data-i="${i}" data-f="name" value="${esc(r.name)}" placeholder="Start typing to search..."></td>
+ <td class="suggest-cell"><input class="row-input desc" autocomplete="off" data-kind="${kind}" data-i="${i}" data-f="name" value="${esc(r.name)}" placeholder="Click or type to search..."><div class="suggestions hidden"></div></td>
  <td><input class="row-input qty" type="number" min="0" step="0.01" data-kind="${kind}" data-i="${i}" data-f="qty" value="${r.qty}"></td>
  <td><input class="row-input money" type="number" min="0" step="0.01" data-kind="${kind}" data-i="${i}" data-f="sell" value="${Number(r.sell||0).toFixed(2)}"></td>
  <td class="num"><strong>${money((r.qty||0)*(r.sell||0))}</strong></td>
  <td><button class="remove" data-remove="${kind}" data-i="${i}">×</button></td></tr>`).join('');
+}
+function closeSuggestions(except=null){
+ document.querySelectorAll('.suggestions').forEach(x=>{if(x!==except)x.classList.add('hidden')});
+ if(!except)activeSuggest=null;
+}
+function showSuggestions(input){
+ const box=input.parentElement.querySelector('.suggestions'); if(!box)return;
+ const kind=input.dataset.kind; const q=input.value.trim().toLowerCase();
+ const matches=DATA[kind].filter(x=>!q||x.name.toLowerCase().includes(q));
+ box.innerHTML=matches.length?matches.map(x=>`<button type="button" class="suggestion" data-pick="${kind}" data-i="${input.dataset.i}" data-name="${esc(x.name)}"><span>${esc(x.name)}</span><strong>${money(x.sell)}</strong></button>`).join(''):'<div class="suggest-empty">No matching items</div>';
+ closeSuggestions(box); box.classList.remove('hidden'); activeSuggest=box;
+}
+function pickSuggestion(kind,i,name){
+ const r=state[kind][+i],hit=lookup(kind,name); if(!r||!hit)return;
+ r.name=hit.name;r.sell=hit.sell;r.cost=hit.cost;renderRows(kind);recalc();saveDraft();closeSuggestions();
 }
 function totals(){
  const mat=state.materials.reduce((a,r)=>a+(+r.qty||0)*(+r.sell||0),0); const tool=state.tools.reduce((a,r)=>a+(+r.qty||0)*(+r.sell||0),0);
@@ -34,7 +50,9 @@ function archive(){const arr=JSON.parse(localStorage.getItem('gf-archive')||'[]'
 function renderArchive(){const arr=JSON.parse(localStorage.getItem('gf-archive')||'[]');$('#archiveList').innerHTML=arr.length?arr.map(s=>`<div class="archive-entry"><strong>${esc(s.reference||'Untitled')} · ${esc(s.customer||'No customer')}</strong><small>${new Date(s.updated).toLocaleString('en-GB')} · ${money(s.total)}</small><div class="archive-actions"><button class="load" data-load="${s.id}">Open</button><button class="delete" data-delete="${s.id}">Delete</button></div></div>`).join(''):'<p class="muted">No archived estimates yet.</p>'}
 function newEstimate(){if(confirm('Start a new estimate? The current draft will remain in your browser until overwritten.')){const n=parseInt(($('#reference').value.match(/\d+/)||['3072'])[0],10)+1;loadSnap({reference:`GF ${n}`,customer:'',phone:'',date:new Date().toISOString().slice(0,10),address:'',work:'',hours:0,labourCost:8,labourSell:20,discount:0,materials:[],tools:[]})}}
 
-document.addEventListener('input',e=>{const el=e.target;if(el.dataset.kind){const r=state[el.dataset.kind][+el.dataset.i];r[el.dataset.f]=el.dataset.f==='name'?el.value:+el.value;if(el.dataset.f==='name'){const hit=lookup(el.dataset.kind,el.value);if(hit){r.sell=hit.sell;r.cost=hit.cost;renderRows(el.dataset.kind)}}recalc();saveDraft()}else if(el.matches('input,textarea')){recalc();saveDraft()}})
-document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.remove){state[b.dataset.remove].splice(+b.dataset.i,1);renderRows(b.dataset.remove);recalc();saveDraft()}if(b.dataset.load){const arr=JSON.parse(localStorage.getItem('gf-archive')||'[]'),s=arr.find(x=>x.id===b.dataset.load);if(s){loadSnap(s);$('#archiveModal').classList.add('hidden')}}if(b.dataset.delete){let arr=JSON.parse(localStorage.getItem('gf-archive')||'[]');arr=arr.filter(x=>x.id!==b.dataset.delete);localStorage.setItem('gf-archive',JSON.stringify(arr));renderArchive()}})
+document.addEventListener('focusin',e=>{if(e.target.matches('.desc[data-kind]'))showSuggestions(e.target)});
+document.addEventListener('input',e=>{const el=e.target;if(el.dataset.kind){const r=state[el.dataset.kind][+el.dataset.i];r[el.dataset.f]=el.dataset.f==='name'?el.value:+el.value;if(el.dataset.f==='name'){showSuggestions(el);const hit=lookup(el.dataset.kind,el.value);if(hit){r.sell=hit.sell;r.cost=hit.cost}}recalc();saveDraft()}else if(el.matches('input,textarea')){recalc();saveDraft()}})
+document.addEventListener('mousedown',e=>{const pick=e.target.closest('[data-pick]');if(pick){e.preventDefault();pickSuggestion(pick.dataset.pick,pick.dataset.i,pick.dataset.name)}});
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!e.target.closest('.suggest-cell'))closeSuggestions();if(!b)return;if(b.dataset.remove){state[b.dataset.remove].splice(+b.dataset.i,1);renderRows(b.dataset.remove);recalc();saveDraft()}if(b.dataset.load){const arr=JSON.parse(localStorage.getItem('gf-archive')||'[]'),s=arr.find(x=>x.id===b.dataset.load);if(s){loadSnap(s);$('#archiveModal').classList.add('hidden')}}if(b.dataset.delete){let arr=JSON.parse(localStorage.getItem('gf-archive')||'[]');arr=arr.filter(x=>x.id!==b.dataset.delete);localStorage.setItem('gf-archive',JSON.stringify(arr));renderArchive()}})
 $('#addMaterial').onclick=()=>addRow('materials');$('#addTool').onclick=()=>addRow('tools');$('#printBtn').onclick=()=>{archive();window.print()};$('#archiveBtn').onclick=()=>{renderArchive();$('#archiveModal').classList.remove('hidden')};$('#closeArchive').onclick=()=>$('#archiveModal').classList.add('hidden');$('#newBtn').onclick=newEstimate;$('#copyOrder').onclick=async()=>{const txt=state.materials.filter(r=>r.name&&+r.qty>0).map(r=>`${r.qty} × ${r.name}`).join('\n');if(txt)await navigator.clipboard.writeText(txt)};
 fillLists();const draft=JSON.parse(localStorage.getItem('gf-draft')||'null');if(draft)loadSnap(draft);else{addRow('materials');addRow('tools',{name:'N/A',qty:0,sell:0,cost:0});recalc()}
