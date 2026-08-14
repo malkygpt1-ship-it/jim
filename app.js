@@ -56,10 +56,26 @@ let saveTimer; function saveDraft(){clearTimeout(saveTimer);$('#saveState').text
 function archive(){const arr=JSON.parse(localStorage.getItem('gf-archive')||'[]');const s=snapshot();arr.unshift({...s,id:crypto.randomUUID()});localStorage.setItem('gf-archive',JSON.stringify(arr.slice(0,200)));renderArchive()}
 function renderArchive(){const arr=JSON.parse(localStorage.getItem('gf-archive')||'[]');$('#archiveList').innerHTML=arr.length?arr.map(s=>`<div class="archive-entry"><strong>${esc(s.reference||'Untitled')} · ${esc(s.customer||'No customer')}</strong><small>${new Date(s.updated).toLocaleString('en-GB')} · ${money(s.total)}</small><div class="archive-actions"><button class="load" data-load="${s.id}">Open</button><button class="delete" data-delete="${s.id}">Delete</button></div></div>`).join(''):'<p class="muted">No archived estimates yet.</p>'}
 function newEstimate(){if(confirm('Start a new estimate? The current draft will remain in your browser until overwritten.')){const n=parseInt(($('#reference').value.match(/\d+/)||['3072'])[0],10)+1;loadSnap({reference:`GF ${n}`,customer:'',phone:'',date:new Date().toISOString().slice(0,10),address:'',work:'',hours:0,labourCost:8,labourSell:20,discount:0,materials:[],tools:[]})}}
+function safeFilenamePart(value,fallback){const cleaned=String(value||'').trim().replace(/[\\/:*?"<>|]+/g,'-').replace(/\s+/g,' ');return cleaned||fallback}
+async function downloadPdf(){
+ closeSuggestions(); recalc(); saveDraft(); archive();
+ const ref=safeFilenamePart($('#reference').value,'GF Estimate');
+ const customer=safeFilenamePart($('#customer').value,'Customer');
+ const filename=`${ref} - ${customer}.pdf`;
+ if(typeof html2pdf!=='function'){alert('PDF generator did not load. Please refresh the page and try again.');return}
+ const btn=$('#printBtn'); const old=btn.textContent; btn.disabled=true; btn.textContent='Creating PDF…';
+ document.body.classList.add('pdf-export');
+ try{
+   await new Promise(r=>setTimeout(r,80));
+   await html2pdf().set({margin:[8,8,8,8],filename,image:{type:'jpeg',quality:.98},html2canvas:{scale:2,useCORS:true,scrollY:0},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['css','legacy']}}).from(document.body).save();
+ }finally{
+   document.body.classList.remove('pdf-export'); btn.disabled=false; btn.textContent=old;
+ }
+}
 
 document.addEventListener('focusin',e=>{if(e.target.matches('.desc[data-kind]'))showSuggestions(e.target)});
 document.addEventListener('input',e=>{const el=e.target;if(el.dataset.kind){const r=state[el.dataset.kind][+el.dataset.i];r[el.dataset.f]=el.dataset.f==='name'?el.value:+el.value;if(el.dataset.f==='name'){showSuggestions(el);const hit=lookup(el.dataset.kind,el.value);if(hit){r.sell=hit.sell;r.cost=hit.cost}}recalc();saveDraft()}else if(el.matches('input,textarea')){recalc();saveDraft()}})
 document.addEventListener('mousedown',e=>{const pick=e.target.closest('[data-pick]');if(pick){e.preventDefault();pickSuggestion(pick.dataset.pick,pick.dataset.i,pick.dataset.name)}});
 document.addEventListener('click',e=>{const b=e.target.closest('button');if(!e.target.closest('.suggest-cell'))closeSuggestions();if(!b)return;if(b.dataset.remove){state[b.dataset.remove].splice(+b.dataset.i,1);renderRows(b.dataset.remove);recalc();saveDraft()}if(b.dataset.load){const arr=JSON.parse(localStorage.getItem('gf-archive')||'[]'),s=arr.find(x=>x.id===b.dataset.load);if(s){loadSnap(s);$('#archiveModal').classList.add('hidden')}}if(b.dataset.delete){let arr=JSON.parse(localStorage.getItem('gf-archive')||'[]');arr=arr.filter(x=>x.id!==b.dataset.delete);localStorage.setItem('gf-archive',JSON.stringify(arr));renderArchive()}})
-$('#addMaterial').onclick=()=>addRow('materials');$('#addTool').onclick=()=>addRow('tools');$('#printBtn').onclick=()=>{archive();window.print()};$('#archiveBtn').onclick=()=>{renderArchive();$('#archiveModal').classList.remove('hidden')};$('#closeArchive').onclick=()=>$('#archiveModal').classList.add('hidden');$('#newBtn').onclick=newEstimate;$('#copyOrder').onclick=async()=>{const txt=state.materials.filter(r=>r.name&&+r.qty>0).map(r=>`${r.qty} × ${r.name}`).join('\n');if(txt)await navigator.clipboard.writeText(txt)};
+$('#addMaterial').onclick=()=>addRow('materials');$('#addTool').onclick=()=>addRow('tools');$('#printBtn').onclick=downloadPdf;$('#archiveBtn').onclick=()=>{renderArchive();$('#archiveModal').classList.remove('hidden')};$('#closeArchive').onclick=()=>$('#archiveModal').classList.add('hidden');$('#newBtn').onclick=newEstimate;$('#copyOrder').onclick=async()=>{const txt=state.materials.filter(r=>r.name&&+r.qty>0).map(r=>`${r.qty} × ${r.name}`).join('\n');if(txt)await navigator.clipboard.writeText(txt)};
 fillLists();const draft=JSON.parse(localStorage.getItem('gf-draft')||'null');if(draft)loadSnap(draft);else{addRow('materials');addRow('tools',{name:'N/A',qty:0,sell:0,cost:0});recalc()}
