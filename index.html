@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Good Foundations Estimator</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div>
+    <div class="eyebrow">GOOD FOUNDATIONS</div>
+    <h1>Estimator</h1>
+    <p>Property Maintenance · 20+ Years Experience · Fully Insured</p>
+  </div>
+  <div class="top-actions">
+    <button class="ghost" id="newBtn">New estimate</button>
+    <button class="ghost" id="archiveBtn">Archive</button>
+    <button class="primary" id="printBtn">Save / Print PDF</button>
+  </div>
+</header>
+
+<main class="shell">
+  <section class="card customer-card">
+    <div class="section-head"><div><span class="step">1</span><h2>Customer & job</h2></div><span id="saveState" class="save-state">Saved locally</span></div>
+    <div class="grid cols-4">
+      <label>Estimate reference<input id="reference" value="GF 3072"></label>
+      <label>Customer<input id="customer" value="Peter Nixon"></label>
+      <label>Phone<input id="phone" placeholder="Customer phone"></label>
+      <label>Date of enquiry<input id="date" type="date" value="2026-06-09"></label>
+    </div>
+    <label>Customer address<textarea id="address" rows="2">23 Clarendon Crescent, Linlithgow</textarea></label>
+    <label>Type of work<textarea id="work" rows="3">Repoint wall, replace bricks where required, re-bed slabs where required.</textarea></label>
+  </section>
+
+  <section class="card">
+    <div class="section-head"><div><span class="step">2</span><h2>Materials</h2></div><button class="text-btn" id="addMaterial">+ Add material</button></div>
+    <div class="table-wrap">
+      <table><thead><tr><th>Description</th><th class="num">Qty</th><th class="num">Sell price</th><th class="num">Total</th><th></th></tr></thead><tbody id="materialsBody"></tbody></table>
+    </div>
+    <div class="subtotal"><span>Materials subtotal</span><strong id="materialsSubtotal">£0.00</strong></div>
+  </section>
+
+  <section class="card">
+    <div class="section-head"><div><span class="step">3</span><h2>Tool hire</h2></div><button class="text-btn" id="addTool">+ Add tool</button></div>
+    <div class="table-wrap">
+      <table><thead><tr><th>Description</th><th class="num">Qty</th><th class="num">Sell price</th><th class="num">Total</th><th></th></tr></thead><tbody id="toolsBody"></tbody></table>
+    </div>
+    <div class="subtotal"><span>Tools subtotal</span><strong id="toolsSubtotal">£0.00</strong></div>
+  </section>
+
+  <section class="split">
+    <section class="card">
+      <div class="section-head"><div><span class="step">4</span><h2>Labour</h2></div></div>
+      <div class="grid cols-3">
+        <label>Hours<input id="hours" type="number" min="0" step="0.5" value="26"></label>
+        <label>Cost / hour<input id="labourCost" type="number" min="0" step="0.01" value="8"></label>
+        <label>Sell / hour<input id="labourSell" type="number" min="0" step="0.01" value="20"></label>
+      </div>
+      <div class="subtotal"><span>Labour subtotal</span><strong id="labourSubtotal">£520.00</strong></div>
+    </section>
+
+    <section class="card totals-card">
+      <div class="section-head"><div><span class="step">5</span><h2>Quote summary</h2></div></div>
+      <div class="summary-row"><span>Materials</span><span id="sumMaterials">£0.00</span></div>
+      <div class="summary-row"><span>Tools</span><span id="sumTools">£0.00</span></div>
+      <div class="summary-row"><span>Labour</span><span id="sumLabour">£520.00</span></div>
+      <div class="summary-row discount"><label>Discount %</label><input id="discount" type="number" min="0" max="100" step="1" value="0"></div>
+      <div class="grand"><span>Total quotation</span><strong id="grandTotal">£520.00</strong></div>
+      <div class="margin-box"><span>Forecast gross margin</span><strong id="grossMargin">60.0%</strong><small id="profitText">£312.00 forecast gross profit</small></div>
+    </section>
+  </section>
+
+  <section class="card order-card">
+    <div class="section-head"><div><span class="step">6</span><h2>Material order list</h2></div><button class="text-btn" id="copyOrder">Copy list</button></div>
+    <div id="orderList" class="order-list"><span class="muted">Add materials to generate the order list.</span></div>
+  </section>
+</main>
+
+<div class="modal hidden" id="archiveModal">
+  <div class="modal-panel">
+    <div class="section-head"><h2>Saved estimates</h2><button class="icon-btn" id="closeArchive">×</button></div>
+    <div id="archiveList"></div>
+  </div>
+</div>
+
+<datalist id="materialOptions"></datalist>
+<datalist id="toolOptions"></datalist>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
