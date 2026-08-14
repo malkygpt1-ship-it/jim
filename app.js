@@ -1,4 +1,6 @@
-const DATA=window.GF_DATA||{materials:[],tools:[]};
+const BASE=window.GF_DATA||{materials:[],tools:[]};
+const savedMaterials=(()=>{try{const v=JSON.parse(localStorage.getItem('gf-materials')||'null');return Array.isArray(v)?v:null}catch{return null}})();
+const DATA={materials:savedMaterials||BASE.materials,tools:BASE.tools};
 const $=s=>document.querySelector(s); const money=n=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(Number(n)||0);
 const state={materials:[],tools:[]};
 let activeSuggest=null;
@@ -19,10 +21,7 @@ function renderRows(kind){
  <td class="num"><strong>${money((r.qty||0)*(r.sell||0))}</strong></td>
  <td><button class="remove" data-remove="${kind}" data-i="${i}">×</button></td></tr>`).join('');
 }
-function closeSuggestions(except=null){
- document.querySelectorAll('.suggestions').forEach(x=>{if(x!==except)x.classList.add('hidden')});
- if(!except)activeSuggest=null;
-}
+function closeSuggestions(except=null){document.querySelectorAll('.suggestions').forEach(x=>{if(x!==except)x.classList.add('hidden')});if(!except)activeSuggest=null}
 function showSuggestions(input){
  const box=input.parentElement.querySelector('.suggestions'); if(!box)return;
  const kind=input.dataset.kind; const q=input.value.trim().toLowerCase();
@@ -30,10 +29,7 @@ function showSuggestions(input){
  box.innerHTML=matches.length?matches.map(x=>`<button type="button" class="suggestion" data-pick="${kind}" data-i="${input.dataset.i}" data-name="${esc(x.name)}"><span>${esc(x.name)}</span><strong>${money(x.sell)}</strong></button>`).join(''):'<div class="suggest-empty">No matching items</div>';
  closeSuggestions(box); box.classList.remove('hidden'); activeSuggest=box;
 }
-function pickSuggestion(kind,i,name){
- const r=state[kind][+i],hit=lookup(kind,name); if(!r||!hit)return;
- r.name=hit.name;r.sell=hit.sell;r.cost=hit.cost;renderRows(kind);recalc();saveDraft();closeSuggestions();
-}
+function pickSuggestion(kind,i,name){const r=state[kind][+i],hit=lookup(kind,name);if(!r||!hit)return;r.name=hit.name;r.sell=hit.sell;r.cost=hit.cost;renderRows(kind);recalc();saveDraft();closeSuggestions()}
 function totals(){
  const mat=state.materials.reduce((a,r)=>a+(+r.qty||0)*(+r.sell||0),0); const tool=state.tools.reduce((a,r)=>a+(+r.qty||0)*(+r.sell||0),0);
  const hours=+$('#hours').value||0,costH=+$('#labourCost').value||0,sellH=+$('#labourSell').value||0; const labour=hours*sellH;
