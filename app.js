@@ -21,6 +21,17 @@ function renderRows(kind){
  <td class="num"><strong>${money((r.qty||0)*(r.sell||0))}</strong></td>
  <td><button class="remove" data-remove="${kind}" data-i="${i}">×</button></td></tr>`).join('');
 }
+function updateLineTotals(){
+  for(const kind of ['materials','tools']){
+    const body=$(kind==='materials'?'#materialsBody':'#toolsBody');
+    if(!body)continue;
+    [...body.querySelectorAll('tr')].forEach((tr,i)=>{
+      const r=state[kind][i];
+      const cell=tr.querySelector('td.num strong');
+      if(r&&cell)cell.textContent=money((+r.qty||0)*(+r.sell||0));
+    });
+  }
+}
 function closeSuggestions(except=null){document.querySelectorAll('.suggestions').forEach(x=>{if(x!==except)x.classList.add('hidden')});if(!except)activeSuggest=null}
 function showSuggestions(input){
  const box=input.parentElement.querySelector('.suggestions'); if(!box)return;
@@ -37,7 +48,7 @@ function totals(){
  const cost=state.materials.reduce((a,r)=>a+(+r.qty||0)*(+r.cost||0),0)+state.tools.reduce((a,r)=>a+(+r.qty||0)*(+r.cost||0),0)+hours*costH;
  const profit=total-cost, margin=total?profit/total*100:0; return {mat,tool,labour,total,cost,profit,margin};
 }
-function recalc(){const t=totals();$('#materialsSubtotal').textContent=money(t.mat);$('#toolsSubtotal').textContent=money(t.tool);$('#labourSubtotal').textContent=money(t.labour);$('#sumMaterials').textContent=money(t.mat);$('#sumTools').textContent=money(t.tool);$('#sumLabour').textContent=money(t.labour);$('#grandTotal').textContent=money(t.total);$('#grossMargin').textContent=`${t.margin.toFixed(1)}%`;$('#profitText').textContent=`${money(t.profit)} forecast gross profit`;renderOrder()}
+function recalc(){const t=totals();updateLineTotals();$('#materialsSubtotal').textContent=money(t.mat);$('#toolsSubtotal').textContent=money(t.tool);$('#labourSubtotal').textContent=money(t.labour);$('#sumMaterials').textContent=money(t.mat);$('#sumTools').textContent=money(t.tool);$('#sumLabour').textContent=money(t.labour);$('#grandTotal').textContent=money(t.total);$('#grossMargin').textContent=`${t.margin.toFixed(1)}%`;$('#profitText').textContent=`${money(t.profit)} forecast gross profit`;renderOrder()}
 function renderOrder(){const rows=state.materials.filter(r=>r.name&&+r.qty>0);$('#orderList').innerHTML=rows.length?rows.map(r=>`<div class="order-item"><span>${esc(r.name)}</span><strong>${r.qty}</strong></div>`).join(''):'<span class="muted">Add materials to generate the order list.</span>'}
 function snapshot(){return {reference:$('#reference').value,customer:$('#customer').value,phone:$('#phone').value,date:$('#date').value,address:$('#address').value,work:$('#work').value,hours:$('#hours').value,labourCost:$('#labourCost').value,labourSell:$('#labourSell').value,discount:$('#discount').value,materials:state.materials,tools:state.tools,updated:new Date().toISOString(),total:totals().total}}
 function loadSnap(s){for(const k of ['reference','customer','phone','date','address','work','hours','labourCost','labourSell','discount']) if(s[k]!=null) $('#'+k).value=s[k];state.materials=structuredClone(s.materials||[]);state.tools=structuredClone(s.tools||[]);renderRows('materials');renderRows('tools');recalc();saveDraft()}
