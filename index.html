@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Good Foundations Estimator</title>
+<script src="auth.js"></script>
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -17,6 +18,7 @@
     <a class="ghost nav-btn" href="materials.html">Materials</a>
     <button class="ghost" id="newBtn">New estimate</button>
     <button class="ghost" id="archiveBtn">Archive</button>
+    <button class="ghost" onclick="GF_AUTH.logout()">Log out</button>
     <button class="primary" id="printBtn">Save / Print PDF</button>
   </div>
 </header>
