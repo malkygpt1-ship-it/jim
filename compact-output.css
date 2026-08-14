@@ -1,35 +1,44 @@
 .cols-2{grid-template-columns:repeat(2,1fr)}
 
-body.pdf-export{width:794px;font-size:11px;line-height:1.2;background:#fff}
-body.pdf-export .topbar{padding:12px 24px 9px;border-bottom:1px solid var(--brand)}
+/* PDF-only A4 layout: intentionally narrower than the 794px A4 canvas so
+   html2pdf has a genuine gutter on both sides and nothing is clipped. */
+body.pdf-export{width:720px;max-width:720px;margin:0 auto;font-size:11px;line-height:1.2;background:#fff;overflow:hidden}
+body.pdf-export .topbar{width:100%;padding:12px 20px 9px;border-bottom:1px solid var(--brand)}
 body.pdf-export .topbar h1{font-size:20px;margin:0}
 body.pdf-export .topbar p{font-size:9px;margin:1px 0 0}
 body.pdf-export .eyebrow{font-size:9px;letter-spacing:.16em}
-body.pdf-export .shell{padding:8px 24px 12px}
-body.pdf-export .card{padding:5px 0;margin:0}
+body.pdf-export .shell{width:100%;max-width:100%;padding:8px 20px 12px;margin:0}
+body.pdf-export .card{width:100%;max-width:100%;padding:5px 0;margin:0}
 body.pdf-export .section-head{margin-bottom:4px}
 body.pdf-export .section-head h2{font-size:13px}
 body.pdf-export .customer-card>label{margin-top:4px}
 body.pdf-export .grid{gap:5px}
 body.pdf-export label{font-size:8px;gap:1px}
-body.pdf-export input,body.pdf-export textarea{font-size:10px;line-height:1.15;padding:1px 0!important;min-height:0;resize:none}
+body.pdf-export input,body.pdf-export textarea{font-size:10px;line-height:1.15;padding:1px 0!important;min-height:0;resize:none;max-width:100%}
 body.pdf-export textarea{height:auto}
-body.pdf-export table{font-size:9px}
-body.pdf-export th,body.pdf-export td{padding:3px 4px}
+body.pdf-export table{width:100%;max-width:100%;min-width:0!important;font-size:9px;table-layout:fixed}
+body.pdf-export th,body.pdf-export td{padding:3px 4px;overflow:hidden}
 body.pdf-export th{font-size:8px}
-body.pdf-export .row-input{padding:0!important;font-size:9px}
+body.pdf-export th:first-child,body.pdf-export td:first-child{width:54%}
+body.pdf-export th:nth-child(2),body.pdf-export td:nth-child(2){width:10%}
+body.pdf-export th:nth-child(3),body.pdf-export td:nth-child(3){width:18%}
+body.pdf-export th:nth-child(4),body.pdf-export td:nth-child(4){width:18%}
+body.pdf-export th:last-child,body.pdf-export td:last-child{display:none}
+body.pdf-export .row-input{padding:0!important;font-size:9px;max-width:100%}
 body.pdf-export .subtotal{padding:4px 4px 0;gap:12px;font-size:9px}
-body.pdf-export .split{grid-template-columns:1fr 1fr;gap:18px}
-body.pdf-export .summary-row{padding:3px 0;font-size:9px}
+body.pdf-export .split{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;width:100%}
+body.pdf-export .split>*{min-width:0}
+body.pdf-export .summary-row{padding:3px 0;font-size:9px;gap:8px}
+body.pdf-export .summary-row span:last-child{white-space:nowrap;text-align:right}
 body.pdf-export .summary-row.discount input{width:44px;padding:0!important}
-body.pdf-export .grand{margin-top:5px;padding-top:5px}
-body.pdf-export .grand strong{font-size:18px}
+body.pdf-export .grand{margin-top:5px;padding-top:5px;gap:8px;min-width:0}
+body.pdf-export .grand strong{font-size:17px;white-space:nowrap;max-width:48%;text-align:right}
 body.pdf-export .grand span{font-size:10px}
-body.pdf-export .table-wrap{padding-bottom:0;margin-bottom:0}
+body.pdf-export .table-wrap{width:100%;overflow:hidden;padding-bottom:0;margin-bottom:0}
 body.pdf-export .top-actions,body.pdf-export .step,body.pdf-export .text-btn,body.pdf-export .remove,body.pdf-export .save-state,body.pdf-export .order-card,body.pdf-export .suggestions,body.pdf-export .modal{display:none!important}
-body.pdf-export .desc{min-width:0}
-body.pdf-export .money{width:75px}
-body.pdf-export .qty{width:50px}
+body.pdf-export .desc{min-width:0;width:100%}
+body.pdf-export .money{width:100%;text-align:right}
+body.pdf-export .qty{width:100%;text-align:right}
 body.pdf-export .customer-card textarea#work{max-height:34px;overflow:hidden}
 
 @media(max-width:800px){.cols-2{grid-template-columns:1fr 1fr}}
