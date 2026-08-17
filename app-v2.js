@@ -1,8 +1,10 @@
 let BASE={catalogVersion:'legacy',materials:[],tools:[]};
 let CATALOG_VERSION='legacy';
+const DEFAULT_MARKUP=30;
 const $=s=>document.querySelector(s), money=n=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(+n||0);
 const state={materials:[],tools:[]};
 const esc=s=>String(s).replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const hasOwn=(o,k)=>Object.prototype.hasOwnProperty.call(o,k);
 
 function loadMaterials(){
   const base=structuredClone(BASE.materials||[]);
@@ -30,23 +32,75 @@ function loadMaterials(){
 
 let DATA={materials:[],tools:[]};
 const lookup=(kind,key)=>DATA[kind].find(x=>x.id===key)||DATA[kind].find(x=>x.name===key);
+function markupPct(){return Math.min(500,Math.max(0,+$('#materialMarkup')?.value||0))}
+function ensureMarkupOption(value){
+  const select=$('#materialMarkup');if(!select)return;
+  const v=String(value??DEFAULT_MARKUP);
+  if(![...select.options].some(o=>o.value===v)){const o=document.createElement('option');o.value=v;o.textContent=`${v}%`;select.appendChild(o)}
+  select.value=v;
+}
+function materialUnit(r){
+  if(hasOwn(r,'quoteOverride')&&Number.isFinite(+r.quoteOverride))return +r.quoteOverride;
+  return (+r.cost||0)*(1+markupPct()/100);
+}
+function rowUnit(kind,r){return kind==='materials'?materialUnit(r):(+r.sell||0)}
 
 function renderRows(kind){
   const body=$(kind==='materials'?'#materialsBody':'#toolsBody');
-  body.innerHTML=state[kind].map((r,i)=>`<tr><td class="suggest-cell"><input class="row-input desc" autocomplete="off" data-kind="${kind}" data-i="${i}" data-f="name" value="${esc(r.name||'')}" placeholder="Click or type to search..."><div class="suggestions hidden"></div></td><td><input class="row-input qty" type="number" min="0" step="0.01" data-kind="${kind}" data-i="${i}" data-f="qty" value="${r.qty??1}"></td><td><input class="row-input money" type="number" min="0" step="0.01" data-kind="${kind}" data-i="${i}" data-f="sell" value="${Number(r.sell||0).toFixed(2)}"></td><td class="num"><strong>${money((+r.qty||0)*(+r.sell||0))}</strong></td><td><button class="remove" data-remove="${kind}" data-i="${i}">×</button></td></tr>`).join('');
+  body.innerHTML=state[kind].map((r,i)=>{
+    const priceCell=kind==='materials'
+      ?`<div class="derived-price" title="Cost ${money(r.cost)} + ${markupPct()}% markup">${money(materialUnit(r))}</div>`
+      :`<input class="row-input money" type="number" min="0" step="0.01" data-kind="${kind}" data-i="${i}" data-f="sell" value="${Number(r.sell||0).toFixed(2)}">`;
+    return `<tr><td class="suggest-cell"><input class="row-input desc" autocomplete="off" data-kind="${kind}" data-i="${i}" data-f="name" value="${esc(r.name||'')}" placeholder="Click or type to search..."><div class="suggestions hidden"></div></td><td><input class="row-input qty" type="number" min="0" step="0.01" data-kind="${kind}" data-i="${i}" data-f="qty" value="${r.qty??1}"></td><td>${priceCell}</td><td class="num"><strong>${money((+r.qty||0)*rowUnit(kind,r))}</strong></td><td><button class="remove" data-remove="${kind}" data-i="${i}">×</button></td></tr>`;
+  }).join('');
 }
-function addRow(kind,row={name:'',qty:1,sell:0,cost:0}){state[kind].push(row);renderRows(kind);recalc();saveDraft()}
+function addRow(kind,row){
+  const next=row|| (kind==='materials'?{name:'',qty:1,cost:0}:{name:'',qty:1,sell:0,cost:0});
+  state[kind].push(next);renderRows(kind);recalc();saveDraft();
+}
 function showSuggestions(input){
   const box=input.parentElement.querySelector('.suggestions'),q=input.value.trim().toLowerCase(),kind=input.dataset.kind;
   const matches=DATA[kind].filter(x=>!q||x.name.toLowerCase().includes(q));
-  box.innerHTML=matches.length?matches.map(x=>`<button type="button" class="suggestion" data-pick="${kind}" data-i="${input.dataset.i}" data-key="${esc(x.id||x.name)}"><span>${esc(x.name)}</span><strong>${money(x.sell)}</strong></button>`).join(''):'<div class="suggest-empty">No matching items</div>';
+  box.innerHTML=matches.length?matches.map(x=>`<button type="button" class="suggestion" data-pick="${kind}" data-i="${input.dataset.i}" data-key="${esc(x.id||x.name)}"><span>${esc(x.name)}</span><strong>${kind==='materials'?`Cost ${money(x.cost)}`:money(x.sell)}</strong></button>`).join(''):'<div class="suggest-empty">No matching items</div>';
   document.querySelectorAll('.suggestions').forEach(x=>{if(x!==box)x.classList.add('hidden')});box.classList.remove('hidden');
 }
 function closeSuggestions(){document.querySelectorAll('.suggestions').forEach(x=>x.classList.add('hidden'))}
-function totals(){const mat=state.materials.reduce((a,r)=>a+(+r.qty||0)*(+r.sell||0),0),tool=state.tools.reduce((a,r)=>a+(+r.qty||0)*(+r.sell||0),0),labour=(+$('#hours').value||0)*(+$('#labourRate').value||0),discount=Math.min(100,Math.max(0,+$('#discount').value||0))/100;return{mat,tool,labour,total:(mat+tool+labour)*(1-discount)}}
-function recalc(){const t=totals();for(const kind of ['materials','tools']){const body=$(kind==='materials'?'#materialsBody':'#toolsBody');[...body.querySelectorAll('tr')].forEach((tr,i)=>{const r=state[kind][i],cell=tr.querySelector('td.num strong');if(r&&cell)cell.textContent=money((+r.qty||0)*(+r.sell||0))})}$('#materialsSubtotal').textContent=$('#sumMaterials').textContent=money(t.mat);$('#toolsSubtotal').textContent=$('#sumTools').textContent=money(t.tool);$('#labourSubtotal').textContent=$('#sumLabour').textContent=money(t.labour);$('#grandTotal').textContent=money(t.total);const rows=state.materials.filter(r=>r.name&&+r.qty>0);$('#orderList').innerHTML=rows.length?rows.map(r=>`<div class="order-item"><span>${esc(r.name)}</span><strong>${r.qty}</strong></div>`).join(''):'<span class="muted">Add materials to generate the order list.</span>'}
-function snapshot(){return{reference:$('#reference').value,customer:$('#customer').value,phone:$('#phone').value,date:$('#date').value,address:$('#address').value,work:$('#work').value,hours:$('#hours').value,labourRate:$('#labourRate').value,discount:$('#discount').value,materials:state.materials,tools:state.tools,updated:new Date().toISOString(),total:totals().total}}
-function loadSnap(s){for(const k of ['reference','customer','phone','date','address','work','hours','discount'])if(s[k]!=null)$('#'+k).value=s[k];$('#labourRate').value=s.labourRate??s.labourSell??20;state.materials=structuredClone(s.materials||[]);state.tools=structuredClone(s.tools||[]);renderRows('materials');renderRows('tools');recalc();saveDraft()}
+function totals(){
+  const mat=state.materials.reduce((a,r)=>a+(+r.qty||0)*materialUnit(r),0);
+  const tool=state.tools.reduce((a,r)=>a+(+r.qty||0)*(+r.sell||0),0);
+  const labour=(+$('#hours').value||0)*(+$('#labourRate').value||0);
+  const discount=Math.min(100,Math.max(0,+$('#discount').value||0))/100;
+  return{mat,tool,labour,total:(mat+tool+labour)*(1-discount)};
+}
+function recalc(){
+  const t=totals();
+  for(const kind of ['materials','tools']){
+    const body=$(kind==='materials'?'#materialsBody':'#toolsBody');
+    [...body.querySelectorAll('tr')].forEach((tr,i)=>{
+      const r=state[kind][i],cell=tr.querySelector('td.num strong');
+      if(r&&cell)cell.textContent=money((+r.qty||0)*rowUnit(kind,r));
+      if(kind==='materials'&&r){const unit=tr.querySelector('.derived-price');if(unit){unit.textContent=money(materialUnit(r));unit.title=`Cost ${money(r.cost)} + ${markupPct()}% markup`}}
+    });
+  }
+  $('#materialsSubtotal').textContent=$('#sumMaterials').textContent=money(t.mat);
+  $('#toolsSubtotal').textContent=$('#sumTools').textContent=money(t.tool);
+  $('#labourSubtotal').textContent=$('#sumLabour').textContent=money(t.labour);
+  $('#grandTotal').textContent=money(t.total);
+  const rows=state.materials.filter(r=>r.name&&+r.qty>0);
+  $('#orderList').innerHTML=rows.length?rows.map(r=>`<div class="order-item"><span>${esc(r.name)}</span><strong>${r.qty}</strong></div>`).join(''):'<span class="muted">Add materials to generate the order list.</span>';
+}
+function snapshot(){return{reference:$('#reference').value,customer:$('#customer').value,phone:$('#phone').value,date:$('#date').value,address:$('#address').value,work:$('#work').value,hours:$('#hours').value,labourRate:$('#labourRate').value,materialMarkup:$('#materialMarkup').value,discount:$('#discount').value,materials:state.materials,tools:state.tools,updated:new Date().toISOString(),total:totals().total}}
+function loadSnap(s){
+  for(const k of ['reference','customer','phone','date','address','work','hours','discount'])if(s[k]!=null)$('#'+k).value=s[k];
+  $('#labourRate').value=s.labourRate??s.labourSell??20;
+  ensureMarkupOption(s.materialMarkup??DEFAULT_MARKUP);
+  state.materials=structuredClone(s.materials||[]);
+  state.tools=structuredClone(s.tools||[]);
+  if(s.materialMarkup==null){
+    state.materials.forEach(r=>{if(!hasOwn(r,'quoteOverride')&&hasOwn(r,'sell'))r.quoteOverride=+r.sell||0});
+  }
+  renderRows('materials');renderRows('tools');recalc();saveDraft();
+}
 let timer;function saveDraft(){clearTimeout(timer);$('#saveState').textContent='Saving…';timer=setTimeout(()=>{localStorage.setItem('gf-draft',JSON.stringify(snapshot()));$('#saveState').textContent='Saved locally'},150)}
 function archive(){const arr=JSON.parse(localStorage.getItem('gf-archive')||'[]');arr.unshift({...snapshot(),id:crypto.randomUUID()});localStorage.setItem('gf-archive',JSON.stringify(arr.slice(0,200)));renderArchive()}
 function renderArchive(){const arr=JSON.parse(localStorage.getItem('gf-archive')||'[]');$('#archiveList').innerHTML=arr.length?arr.map(s=>`<div class="archive-entry"><strong>${esc(s.reference||'Untitled')} · ${esc(s.customer||'No customer')}</strong><small>${new Date(s.updated).toLocaleString('en-GB')} · ${money(s.total)}</small><div class="archive-actions"><button class="load" data-load="${s.id}">Open</button><button class="delete" data-delete="${s.id}">Delete</button></div></div>`).join(''):'<p class="muted">No archived estimates yet.</p>'}
@@ -54,14 +108,50 @@ function safe(v,f){return String(v||'').trim().replace(/[\\/:*?"<>|]+/g,'-').rep
 async function downloadPdf(){closeSuggestions();recalc();archive();const filename=`${safe($('#reference').value,'GF Estimate')} - ${safe($('#customer').value,'Customer')}.pdf`;if(typeof html2pdf!=='function'){alert('PDF generator did not load. Please refresh and try again.');return}const b=$('#printBtn'),old=b.textContent;b.disabled=true;b.textContent='Creating PDF…';document.body.classList.add('pdf-export');try{await new Promise(r=>setTimeout(r,60));await html2pdf().set({margin:[3,4,3,4],filename,image:{type:'jpeg',quality:.95},html2canvas:{scale:2,useCORS:true,scrollY:0},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['avoid-all','css','legacy']}}).from(document.body).save()}finally{document.body.classList.remove('pdf-export');b.disabled=false;b.textContent=old}}
 
 document.addEventListener('focusin',e=>{if(e.target.matches('.desc[data-kind]'))showSuggestions(e.target)});
-document.addEventListener('input',e=>{const el=e.target;if(el.dataset.kind){const r=state[el.dataset.kind][+el.dataset.i];r[el.dataset.f]=el.dataset.f==='name'?el.value:+el.value;if(el.dataset.f==='name'){showSuggestions(el);const hit=lookup(el.dataset.kind,el.value);if(hit){r.catalogId=hit.id;r.sell=hit.sell;r.cost=hit.cost}}}recalc();saveDraft()});
-document.addEventListener('mousedown',e=>{const p=e.target.closest('[data-pick]');if(p){e.preventDefault();const r=state[p.dataset.pick][+p.dataset.i],hit=lookup(p.dataset.pick,p.dataset.key);if(r&&hit){Object.assign(r,{catalogId:hit.id,name:hit.name,sell:hit.sell,cost:hit.cost});renderRows(p.dataset.pick);recalc();saveDraft();closeSuggestions()}}});
-document.addEventListener('click',e=>{if(!e.target.closest('.suggest-cell'))closeSuggestions();const b=e.target.closest('button');if(!b)return;if(b.dataset.remove){state[b.dataset.remove].splice(+b.dataset.i,1);renderRows(b.dataset.remove);recalc();saveDraft()}if(b.dataset.load){const s=JSON.parse(localStorage.getItem('gf-archive')||'[]').find(x=>x.id===b.dataset.load);if(s){loadSnap(s);$('#archiveModal').classList.add('hidden')}}if(b.dataset.delete){const arr=JSON.parse(localStorage.getItem('gf-archive')||'[]').filter(x=>x.id!==b.dataset.delete);localStorage.setItem('gf-archive',JSON.stringify(arr));renderArchive()}});
-$('#addMaterial').onclick=()=>addRow('materials');$('#addTool').onclick=()=>addRow('tools');$('#printBtn').onclick=downloadPdf;$('#archiveBtn').onclick=()=>{renderArchive();$('#archiveModal').classList.remove('hidden')};$('#closeArchive').onclick=()=>$('#archiveModal').classList.add('hidden');$('#newBtn').onclick=()=>{if(confirm('Start a new estimate?')){const n=parseInt(($('#reference').value.match(/\d+/)||['3072'])[0],10)+1;loadSnap({reference:`GF ${n}`,customer:'',phone:'',date:new Date().toISOString().slice(0,10),address:'',work:'',hours:0,labourRate:20,discount:0,materials:[],tools:[]})}};$('#copyOrder').onclick=async()=>{const txt=state.materials.filter(r=>r.name&&+r.qty>0).map(r=>`${r.qty} × ${r.name}`).join('\n');if(txt)await navigator.clipboard.writeText(txt)};
+document.addEventListener('input',e=>{
+  const el=e.target;
+  if(el.dataset.kind){
+    const r=state[el.dataset.kind][+el.dataset.i];
+    r[el.dataset.f]=el.dataset.f==='name'?el.value:+el.value;
+    if(el.dataset.f==='name'){
+      showSuggestions(el);
+      const hit=lookup(el.dataset.kind,el.value);
+      if(hit){r.catalogId=hit.id;r.cost=hit.cost;if(el.dataset.kind==='tools')r.sell=hit.sell;else delete r.quoteOverride}
+    }
+  }
+  recalc();saveDraft();
+});
+document.addEventListener('mousedown',e=>{
+  const p=e.target.closest('[data-pick]');if(!p)return;
+  e.preventDefault();
+  const r=state[p.dataset.pick][+p.dataset.i],hit=lookup(p.dataset.pick,p.dataset.key);
+  if(r&&hit){
+    if(p.dataset.pick==='materials')Object.assign(r,{catalogId:hit.id,name:hit.name,cost:hit.cost});
+    else Object.assign(r,{catalogId:hit.id,name:hit.name,sell:hit.sell,cost:hit.cost});
+    if(p.dataset.pick==='materials')delete r.quoteOverride;
+    renderRows(p.dataset.pick);recalc();saveDraft();closeSuggestions();
+  }
+});
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.suggest-cell'))closeSuggestions();
+  const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.remove){state[b.dataset.remove].splice(+b.dataset.i,1);renderRows(b.dataset.remove);recalc();saveDraft()}
+  if(b.dataset.load){const s=JSON.parse(localStorage.getItem('gf-archive')||'[]').find(x=>x.id===b.dataset.load);if(s){loadSnap(s);$('#archiveModal').classList.add('hidden')}}
+  if(b.dataset.delete){const arr=JSON.parse(localStorage.getItem('gf-archive')||'[]').filter(x=>x.id!==b.dataset.delete);localStorage.setItem('gf-archive',JSON.stringify(arr));renderArchive()}
+});
+$('#materialMarkup').addEventListener('change',()=>{state.materials.forEach(r=>delete r.quoteOverride);recalc();saveDraft()});
+$('#addMaterial').onclick=()=>addRow('materials');
+$('#addTool').onclick=()=>addRow('tools');
+$('#printBtn').onclick=downloadPdf;
+$('#archiveBtn').onclick=()=>{renderArchive();$('#archiveModal').classList.remove('hidden')};
+$('#closeArchive').onclick=()=>$('#archiveModal').classList.add('hidden');
+$('#newBtn').onclick=()=>{if(confirm('Start a new estimate?')){const n=parseInt(($('#reference').value.match(/\d+/)||['3072'])[0],10)+1;loadSnap({reference:`GF ${n}`,customer:'',phone:'',date:new Date().toISOString().slice(0,10),address:'',work:'',hours:0,labourRate:20,materialMarkup:$('#materialMarkup').value,discount:0,materials:[],tools:[]})}};
+$('#copyOrder').onclick=async()=>{const txt=state.materials.filter(r=>r.name&&+r.qty>0).map(r=>`${r.qty} × ${r.name}`).join('\n');if(txt)await navigator.clipboard.writeText(txt)};
+
 async function init(){
   try{BASE=await window.GF_DATA_PROMISE;CATALOG_VERSION=BASE.catalogVersion||'legacy';DATA={materials:loadMaterials(),tools:structuredClone(BASE.tools||[])};}
   catch(err){console.error('Could not load estimator catalog',err);alert('The materials/tool catalogue could not be loaded. Please refresh and try again.');return;}
   const draft=JSON.parse(localStorage.getItem('gf-draft')||'null');
-  if(draft)loadSnap(draft);else{addRow('materials');addRow('tools',{name:'',qty:0,sell:0,cost:0});recalc()}
+  if(draft)loadSnap(draft);else{ensureMarkupOption(DEFAULT_MARKUP);addRow('materials');addRow('tools',{name:'',qty:0,sell:0,cost:0});recalc()}
 }
 init();
