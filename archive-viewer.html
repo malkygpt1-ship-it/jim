@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Good Foundations PDF</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;font:14px system-ui,-apple-system,"Segoe UI",sans-serif;background:#dbe2e7;color:#243642}.viewer{height:100%;display:grid;grid-template-rows:auto 1fr}.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:#56768d;color:white}.bar strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.actions{display:flex;gap:8px}.actions button{border:0;border-radius:8px;padding:8px 12px;font:inherit;font-weight:750;cursor:pointer}.print{background:#a8cf6a;color:#243642}.close{background:#ffffff24;color:white}.frame{width:100%;height:100%;border:0;background:white}
+</style>
+</head>
+<body>
+<div class="viewer">
+  <div class="bar"><strong id="title">Saved estimate</strong><div class="actions"><button class="print" id="printBtn">Print PDF</button><button class="close" id="closeBtn">Close</button></div></div>
+  <iframe class="frame" id="frame" title="Archived estimate PDF"></iframe>
+</div>
+<script>
+const q=new URLSearchParams(location.search);
+const pathname=q.get('pathname')||'';
+const filename=q.get('filename')||'estimate.pdf';
+if(!pathname.startsWith('estimates/')||!pathname.endsWith('.pdf'))location.replace('index.html');
+document.title=filename;document.getElementById('title').textContent=filename;
+const frame=document.getElementById('frame');
+frame.src=`/api/estimate-file?pathname=${encodeURIComponent(pathname)}&filename=${encodeURIComponent(filename)}`;
+function printPdf(){try{frame.contentWindow.focus();frame.contentWindow.print()}catch{alert('Use the print button in the PDF viewer.')}}
+document.getElementById('printBtn').onclick=printPdf;
+document.getElementById('closeBtn').onclick=()=>window.close();
+let attempted=false;
+frame.addEventListener('load',()=>{if(q.get('print')==='1'&&!attempted){attempted=true;setTimeout(printPdf,500)}});
+</script>
+</body>
+</html>
