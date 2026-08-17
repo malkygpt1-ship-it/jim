@@ -11,9 +11,9 @@ const COSTS={
 "mat-009":{cost:8,sourcePriceIncVat:16,basis:"Lido Plus current replacement; £16 per 2m² increment = £8 per m²"},
 "mat-010":{cost:8,sourcePriceIncVat:16,basis:"Lido Plus current replacement; £16 per 2m² increment = £8 per m²"},
 "mat-011":{cost:8,sourcePriceIncVat:16,basis:"Lido Plus current replacement; £16 per 2m² increment = £8 per m²"},
-"mat-017":{cost:11.5,sourcePriceIncVat:11.5,basis:"current IBT category price for A&G Crescent 600x600x40 Natural Grey, each"},
-"mat-018":{cost:11.5,sourcePriceIncVat:11.5,basis:"current IBT category price for A&G Crescent 600x600x40 Charcoal, each"},
-"mat-019":{cost:11.5,sourcePriceIncVat:11.5,basis:"current IBT category price for A&G Crescent 600x600x40 Buff, each"},
+"mat-017":{cost:9.49,sourcePriceIncVat:9.49,basis:"live IBT product page price for A&G Crescent 600x600x40 Natural Grey, each"},
+"mat-018":{cost:9.49,sourcePriceIncVat:9.49,basis:"live IBT product page price for A&G Crescent 600x600x40 Charcoal, each"},
+"mat-019":{cost:9.49,sourcePriceIncVat:9.49,basis:"live IBT product page price for A&G Crescent 600x600x40 Buff, each"},
 "mat-024":{cost:1180,sourcePriceIncVat:1.18,basis:"current Calder Buff Rustic brick £1.18 each x 1000"},
 "mat-027":{cost:22,sourcePriceIncVat:2.2,basis:"current 100mm 7N dense block £2.20 each x 10 blocks per m² nominal"}
 };
