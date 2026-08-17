@@ -10,11 +10,29 @@
 .trade-control input{padding:7px;text-align:right}
 .trade-control span{text-align:right;color:var(--brand2);font-weight:750;white-space:nowrap}
 .bill-cost-row{background:var(--soft);margin:2px -8px;padding:9px 8px;border-radius:8px;border-bottom:0}
-body.pdf-export .markup-control,body.pdf-export .internal-summary,body.pdf-export .bom-cost-col,body.pdf-export .bom-screen-subtotal{display:none!important}
+.bom-footer{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.bom-grand-totals{width:min(610px,100%);margin-left:auto;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bom-total-card{border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;gap:2px;box-shadow:0 4px 14px #16251c0b}
+.bom-total-card span{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.bom-total-card strong{font-size:26px;line-height:1.1;color:var(--brand)}
+.bom-total-card small{font-size:11px;color:var(--muted)}
+.bom-bill-total{background:#f7f9f8}
+.bom-quote-total-card{background:var(--soft);border-color:#cadbd1}
+.material-profit-card{width:min(610px,100%);margin:12px 0 0 auto;border:1px solid #c8d9cf;background:linear-gradient(135deg,#eef5f1,#f8fbf9);border-radius:14px;padding:14px 16px;display:grid;grid-template-columns:1fr auto;gap:4px 18px;align-items:end}
+.material-profit-card>div:first-child{display:grid;gap:2px}
+.profit-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--brand2)}
+.material-profit-card #materialProfit{font-size:30px;line-height:1.05;color:var(--brand)}
+.profit-rate{display:grid;gap:2px;text-align:right}
+.profit-rate span{font-size:10px;color:var(--muted);font-weight:700}
+.profit-rate strong{font-size:18px;color:var(--brand2)}
+.material-profit-card p{grid-column:1/-1;margin:8px 0 0;padding-top:8px;border-top:1px solid #d7e4dc;color:var(--muted);font-size:11px;line-height:1.4}
+.material-profit-card p strong{color:var(--ink)}
+body.pdf-export .markup-control,body.pdf-export .internal-summary,body.pdf-export .bom-cost-col,body.pdf-export .bom-screen-subtotal,body.pdf-export .bom-footer{display:none!important}
 body.pdf-export .bom-table{min-width:0!important;table-layout:fixed}
 body.pdf-export .bom-table th:first-child,body.pdf-export .bom-table td:first-child{width:54%}
 body.pdf-export .bom-table th:nth-child(2),body.pdf-export .bom-table td:nth-child(2){width:10%}
 body.pdf-export .bom-table th:nth-child(5),body.pdf-export .bom-table td:nth-child(5){width:18%}
 body.pdf-export .bom-table th:nth-child(6),body.pdf-export .bom-table td:nth-child(6){width:18%}
-@media(max-width:800px){.bom-table{min-width:820px}.trade-control{grid-template-columns:1fr 76px 88px}}
-@media print{.markup-control,.internal-summary,.bom-cost-col,.bom-screen-subtotal{display:none!important}.bom-table{min-width:0!important;table-layout:fixed}}
+@media(max-width:800px){.bom-table{min-width:820px}.trade-control{grid-template-columns:1fr 76px 88px}.bom-grand-totals,.material-profit-card{width:100%}.bom-total-card strong{font-size:22px}.material-profit-card{grid-template-columns:1fr}.profit-rate{text-align:left;margin-top:6px}}
+@media(max-width:520px){.bom-grand-totals{grid-template-columns:1fr}}
+@media print{.markup-control,.internal-summary,.bom-cost-col,.bom-screen-subtotal,.bom-footer{display:none!important}.bom-table{min-width:0!important;table-layout:fixed}}
