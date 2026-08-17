@@ -44,6 +44,30 @@
       <table class="bom-table"><thead><tr><th>Description</th><th class="num">Qty</th><th class="num bom-cost-col">Unit cost</th><th class="num bom-cost-col">Cost total</th><th class="num bom-quote-col">Quote price</th><th class="num bom-quote-col">Quote total</th><th></th></tr></thead><tbody id="materialsBody"></tbody></table>
     </div>
     <div class="subtotal bom-screen-subtotal"><span>Material list cost</span><strong id="materialsSubtotal">£0.00</strong></div>
+
+    <div class="bom-footer">
+      <div class="bom-grand-totals" aria-label="Bill of materials totals">
+        <div class="bom-total-card bom-bill-total">
+          <span>Bill cost</span>
+          <strong id="bomBillGrand">£0.00</strong>
+          <small>After trade discount</small>
+        </div>
+        <div class="bom-total-card bom-quote-total-card">
+          <span>Quoted materials</span>
+          <strong id="bomQuoteGrand">£0.00</strong>
+          <small>After material markup</small>
+        </div>
+      </div>
+
+      <div class="material-profit-card">
+        <div>
+          <span class="profit-label">Material profit</span>
+          <strong id="materialProfit">£0.00</strong>
+        </div>
+        <div class="profit-rate"><span>Profit on quoted materials</span><strong id="materialProfitPct">0.0%</strong></div>
+        <p>This material profit considers both the <strong>trade discount</strong> on the bill cost and the <strong>material markup</strong> set in Quote Summary. The trade discount reduces your bill cost only; it does not reduce the price quoted to the customer.</p>
+      </div>
+    </div>
   </section>
 
   <section class="card">
@@ -96,5 +120,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="data.js"></script>
 <script src="app-v2.js"></script>
+<script src="bom-profit.js"></script>
 </body>
 </html>
