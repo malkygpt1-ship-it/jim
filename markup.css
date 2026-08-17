@@ -5,20 +5,36 @@
 .bom-table{min-width:900px}
 .bom-table .bom-unit-cost,.bom-table .bom-line-cost,.bom-table .bom-quote-total{white-space:nowrap}
 .bom-table .bom-cost-col{background:#fafbf9}
-.trade-control{display:grid;grid-template-columns:1fr 82px 92px;gap:8px;align-items:center}
-.trade-control label{display:block}
-.trade-control input{padding:7px;text-align:right}
-.trade-control span{text-align:right;color:var(--brand2);font-weight:750;white-space:nowrap}
 .bill-cost-row{background:var(--soft);margin:2px -8px;padding:9px 8px;border-radius:8px;border-bottom:0}
-.bom-footer{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
-.bom-grand-totals{width:min(610px,100%);margin-left:auto;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.bom-footer{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);display:grid;grid-template-columns:minmax(280px,1fr) minmax(520px,610px);gap:18px;align-items:start}
+.bom-controls{display:grid;gap:12px}
+.bom-setting-card{min-height:112px;border:1px solid #cbd9d1;border-radius:14px;padding:14px 16px;background:#f8fbf9;box-shadow:0 4px 14px #16251c0b;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 16px;align-items:center}
+.bom-setting-card.trade-setting-card{background:#f7f9f8}
+.bom-setting-card.markup-setting-card{background:var(--soft);border-color:#c3d7ca}
+.setting-copy{display:grid;gap:2px}
+.setting-kicker{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--brand2)}
+.setting-copy strong{font-size:18px;line-height:1.15;color:var(--ink)}
+.setting-copy small{font-size:11px;color:var(--muted)}
+.setting-control{display:grid;gap:5px;min-width:116px}
+.setting-control label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.setting-control input,.setting-control select{height:46px;border:1px solid #bdcec4;border-radius:11px;background:white;padding:8px 10px;font-size:18px;font-weight:800;color:var(--brand);text-align:right;box-shadow:0 2px 8px #173d2b0b}
+.setting-control select{min-width:116px}
+.percent-input{position:relative}
+.percent-input input{padding-right:30px}
+.percent-input span{position:absolute;right:11px;top:50%;transform:translateY(-50%);font-size:15px;font-weight:800;color:var(--brand2);pointer-events:none}
+.setting-result{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;padding-top:9px;border-top:1px solid #dce6e0;color:var(--muted);font-size:11px}
+.setting-result strong{font-size:16px;color:var(--brand2)}
+
+.bom-results{min-width:0}
+.bom-grand-totals{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .bom-total-card{border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;gap:2px;box-shadow:0 4px 14px #16251c0b}
 .bom-total-card span{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
 .bom-total-card strong{font-size:26px;line-height:1.1;color:var(--brand)}
 .bom-total-card small{font-size:11px;color:var(--muted)}
 .bom-bill-total{background:#f7f9f8}
 .bom-quote-total-card{background:var(--soft);border-color:#cadbd1}
-.material-profit-card{width:min(610px,100%);margin:12px 0 0 auto;border:1px solid #c8d9cf;background:linear-gradient(135deg,#eef5f1,#f8fbf9);border-radius:14px;padding:14px 16px;display:grid;grid-template-columns:1fr auto;gap:4px 18px;align-items:end}
+.material-profit-card{width:100%;margin:12px 0 0;border:1px solid #c8d9cf;background:linear-gradient(135deg,#eef5f1,#f8fbf9);border-radius:14px;padding:14px 16px;display:grid;grid-template-columns:1fr auto;gap:4px 18px;align-items:end}
 .material-profit-card>div:first-child{display:grid;gap:2px}
 .profit-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--brand2)}
 .material-profit-card #materialProfit{font-size:30px;line-height:1.05;color:var(--brand)}
@@ -27,12 +43,15 @@
 .profit-rate strong{font-size:18px;color:var(--brand2)}
 .material-profit-card p{grid-column:1/-1;margin:8px 0 0;padding-top:8px;border-top:1px solid #d7e4dc;color:var(--muted);font-size:11px;line-height:1.4}
 .material-profit-card p strong{color:var(--ink)}
+
 body.pdf-export .markup-control,body.pdf-export .internal-summary,body.pdf-export .bom-cost-col,body.pdf-export .bom-screen-subtotal,body.pdf-export .bom-footer{display:none!important}
 body.pdf-export .bom-table{min-width:0!important;table-layout:fixed}
 body.pdf-export .bom-table th:first-child,body.pdf-export .bom-table td:first-child{width:54%}
 body.pdf-export .bom-table th:nth-child(2),body.pdf-export .bom-table td:nth-child(2){width:10%}
 body.pdf-export .bom-table th:nth-child(5),body.pdf-export .bom-table td:nth-child(5){width:18%}
 body.pdf-export .bom-table th:nth-child(6),body.pdf-export .bom-table td:nth-child(6){width:18%}
-@media(max-width:800px){.bom-table{min-width:820px}.trade-control{grid-template-columns:1fr 76px 88px}.bom-grand-totals,.material-profit-card{width:100%}.bom-total-card strong{font-size:22px}.material-profit-card{grid-template-columns:1fr}.profit-rate{text-align:left;margin-top:6px}}
-@media(max-width:520px){.bom-grand-totals{grid-template-columns:1fr}}
+
+@media(max-width:1000px){.bom-footer{grid-template-columns:1fr}.bom-controls{grid-template-columns:1fr 1fr}.bom-results{width:100%}}
+@media(max-width:800px){.bom-table{min-width:820px}.bom-controls{grid-template-columns:1fr}.bom-grand-totals,.material-profit-card{width:100%}.bom-total-card strong{font-size:22px}.material-profit-card{grid-template-columns:1fr}.profit-rate{text-align:left;margin-top:6px}}
+@media(max-width:520px){.bom-grand-totals{grid-template-columns:1fr}.bom-setting-card{grid-template-columns:1fr}.setting-control{min-width:0}.setting-control select{width:100%}}
 @media print{.markup-control,.internal-summary,.bom-cost-col,.bom-screen-subtotal,.bom-footer{display:none!important}.bom-table{min-width:0!important;table-layout:fixed}}
