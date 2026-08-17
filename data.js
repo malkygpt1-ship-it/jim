@@ -1,6 +1,6 @@
 // Full catalogue extracted from gf3093.xlsx.
 // Materials: Excel Materials!C3:E567 (565 legacy rows) plus verified current catalogue additions.
-// Current IBT Decorative Chips category: 33/33 represented; Decorative Pebbles: 5/5 represented as of 17 Aug 2026.
+// Current IBT Decorative Chips category: 33/33 represented; Decorative Pebbles: 5/5; Decorative Slate: 7/7 represented as of 17 Aug 2026.
 // Tool hire: Materials!J3:L252 (250 rows).
 // Catalogue additions are merged into existing locally edited price books on version change.
 async function gfFetchCatalogPart(url){
@@ -40,7 +40,7 @@ window.GF_DATA_PROMISE=Promise.all([
   const seen=new Set(base.map(m=>m.id));
   const additions=(window.GF_CATALOG_ADDITIONS_DECORATIVE||[]).filter(m=>!seen.has(m.id));
   return {
-    catalogVersion:'2026-08-17-ibt-incvat-v6-decorative-pebbles',
+    catalogVersion:'2026-08-17-ibt-incvat-v7-decorative-slate',
     materials:[...base,...additions],
     tools:await gfDecodeCatalog(tools)
   };
