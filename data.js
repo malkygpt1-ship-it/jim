@@ -1,5 +1,6 @@
 // Full catalogue extracted from gf3093.xlsx.
-// Materials: Excel Materials!C3:E567 (565 rows). Tool hire: Materials!J3:L252 (250 rows).
+// Materials: Excel Materials!C3:E567 (565 legacy rows) plus verified current catalogue additions.
+// Tool hire: Materials!J3:L252 (250 rows).
 async function gfFetchCatalogPart(url){
   const r=await fetch(url,{cache:'no-store'});
   if(!r.ok)throw new Error(`${url} ${r.status}`);
@@ -31,8 +32,14 @@ window.GF_DATA_PROMISE=Promise.all([
   gfLoadScript('supplier-costs.js')
     .then(()=>gfLoadScript('supplier-costs-batch14.js'))
     .then(()=>gfLoadScript('supplier-costs-batch15.js'))
-]).then(async([materials1,materials2,tools])=>({
-  catalogVersion:'2026-08-17-ibt-incvat-v4',
-  materials:gfApplySupplierCosts(await gfDecodeCatalog(materials1+materials2)),
-  tools:await gfDecodeCatalog(tools)
-}));
+    .then(()=>gfLoadScript('catalog-additions-decorative.js'))
+]).then(async([materials1,materials2,tools])=>{
+  const base=gfApplySupplierCosts(await gfDecodeCatalog(materials1+materials2));
+  const seen=new Set(base.map(m=>m.id));
+  const additions=(window.GF_CATALOG_ADDITIONS_DECORATIVE||[]).filter(m=>!seen.has(m.id));
+  return {
+    catalogVersion:'2026-08-17-ibt-incvat-v5-decorative',
+    materials:[...base,...additions],
+    tools:await gfDecodeCatalog(tools)
+  };
+});
