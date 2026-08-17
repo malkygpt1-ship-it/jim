@@ -15,14 +15,16 @@
     return [...document.querySelectorAll('#materialsBody tr')].map(tr=>{
       const name=tr.querySelector('.desc')?.value?.trim()||'';
       const qty=Number(tr.querySelector('.qty')?.value)||0;
-      const cost=parseMoney(tr.querySelector('.bom-unit-cost')?.textContent);
-      return{name,qty,cost};
+      const shownUnit=parseMoney(tr.querySelector('.bom-unit-cost')?.textContent);
+      const lineTotal=parseMoney(tr.querySelector('.bom-line-cost')?.textContent);
+      const cost=qty>0&&lineTotal>0?lineTotal/qty:shownUnit;
+      return{name,qty,cost,lineTotal:lineTotal||qty*cost};
     }).filter(r=>r.name&&r.qty>0);
   }
 
   function bomFigures(){
     const rows=currentMaterialRows();
-    const subtotal=rows.reduce((sum,r)=>sum+r.qty*r.cost,0);
+    const subtotal=rows.reduce((sum,r)=>sum+r.lineTotal,0);
     const pct=Math.min(100,Math.max(0,Number(document.getElementById('tradeDiscount')?.value)||0));
     const saving=subtotal*pct/100;
     return{rows,subtotal,pct,saving,total:subtotal-saving};
@@ -69,7 +71,7 @@
       <table class="order-pdf-table">
         <colgroup><col style="width:58%"><col style="width:10%"><col style="width:16%"><col style="width:16%"></colgroup>
         <thead><tr><th>Description</th><th class="num">Qty</th><th class="num">List price</th><th class="num">Subtotal</th></tr></thead>
-        <tbody>${f.rows.length?f.rows.map(r=>`<tr><td>${esc(r.name)}</td><td class="num">${r.qty}</td><td class="num">${money(r.cost)}</td><td class="num">${money(r.qty*r.cost)}</td></tr>`).join(''):'<tr><td colspan="4">No materials added.</td></tr>'}</tbody>
+        <tbody>${f.rows.length?f.rows.map(r=>`<tr><td>${esc(r.name)}</td><td class="num">${r.qty}</td><td class="num">${money(r.cost)}</td><td class="num">${money(r.lineTotal)}</td></tr>`).join(''):'<tr><td colspan="4">No materials added.</td></tr>'}</tbody>
       </table>
       <div class="order-pdf-summary">
         <div><span>List subtotal</span><strong>${money(f.subtotal)}</strong></div>
