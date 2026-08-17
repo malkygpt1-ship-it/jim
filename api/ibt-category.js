@@ -2,6 +2,19 @@ const ALLOWED_HOSTS=new Set(['ibtmerchants.co.uk','www.ibtmerchants.co.uk']);
 function decode(s=''){return String(s).replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&pound;/gi,'£')}
 function strip(s=''){return decode(String(s).replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim())}
 function abs(base,v){try{return new URL(decode(v),base).href}catch{return ''}}
+function nearbyProductImage(html,index,base){
+  const start=Math.max(0,index-1800),end=Math.min(html.length,index+1400),seg=html.slice(start,end);
+  const candidates=[];
+  for(const m of seg.matchAll(/(?:data-src|data-original|data-lazy|src)=["']([^"']+)["']/gi)){
+    const raw=m[1];
+    if(!/\/images\//i.test(raw)||!/products/i.test(raw))continue;
+    const image=abs(base,raw);if(!image)continue;
+    const absoluteIndex=start+(m.index||0);
+    candidates.push({image,distance:Math.abs(absoluteIndex-index)});
+  }
+  candidates.sort((a,b)=>a.distance-b.distance);
+  return candidates[0]?.image||'';
+}
 export default async function handler(req,res){
  try{
   const raw=String(Array.isArray(req.query.url)?req.query.url[0]:req.query.url||'').trim();
@@ -14,7 +27,8 @@ export default async function handler(req,res){
   for(const m of html.matchAll(/<a\b[^>]*href=["']([^"']*\/product\/[^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)){
     const productUrl=abs(url.href,m[1]); if(!productUrl||seen.has(productUrl))continue;
     const title=strip(m[2]); if(!title||title.length<3)continue;
-    seen.add(productUrl); products.push({title,url:productUrl});
+    const image=nearbyProductImage(html,m.index||0,url.href);
+    seen.add(productUrl); products.push({title,url:productUrl,image});
   }
   res.setHeader('Cache-Control','s-maxage=21600, stale-while-revalidate=86400');
   return res.status(200).json({category:url.href,count:products.length,products});
