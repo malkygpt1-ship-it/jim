@@ -1,4 +1,16 @@
 (() => {
+  if (!document.querySelector('link[href="price-edit.css"]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'price-edit.css';
+    document.head.appendChild(link);
+  }
+  if (!document.querySelector('script[src="price-edit.js"]')) {
+    const script = document.createElement('script');
+    script.src = 'price-edit.js';
+    document.body.appendChild(script);
+  }
+
   const moneyValue = (id) => {
     const el = document.getElementById(id);
     if (!el) return 0;
