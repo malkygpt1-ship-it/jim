@@ -1,5 +1,5 @@
 (()=>{
-  const £=n=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(Number(n)||0);
+  const fmt=n=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(Number(n)||0);
   const escHtml=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const safeFile=s=>String(s||'').trim().replace(/[\\/:*?"<>|]+/g,'-').replace(/\s+/g,' ')||'Material Order List';
 
@@ -69,11 +69,11 @@
     const f=figures();
     body.innerHTML=f.rows.length?f.rows.map(r=>{
       const qty=Number(r.qty)||0,cost=Number(r.cost)||0;
-      return `<tr><td class="order-desc">${escHtml(r.name)}</td><td class="num order-qty">${qty}</td><td class="num">${£(cost)}</td><td class="num"><strong>${£(qty*cost)}</strong></td></tr>`;
+      return `<tr><td class="order-desc">${escHtml(r.name)}</td><td class="num order-qty">${qty}</td><td class="num">${fmt(cost)}</td><td class="num"><strong>${fmt(qty*cost)}</strong></td></tr>`;
     }).join(''):`<tr><td colspan="4" class="order-empty">Add materials to generate the purchase list.</td></tr>`;
-    const sub=document.getElementById('orderListSubtotal');if(sub)sub.textContent=£(f.subtotal);
-    const disc=document.getElementById('orderTradeDiscount');if(disc)disc.textContent=`${f.pct}%  −${£(f.saving)}`;
-    const grand=document.getElementById('orderGrandTotal');if(grand)grand.textContent=£(f.total);
+    const sub=document.getElementById('orderListSubtotal');if(sub)sub.textContent=fmt(f.subtotal);
+    const disc=document.getElementById('orderTradeDiscount');if(disc)disc.textContent=`${f.pct}%  −${fmt(f.saving)}`;
+    const grand=document.getElementById('orderGrandTotal');if(grand)grand.textContent=fmt(f.total);
   }
 
   function buildPdfSheet(){
@@ -97,13 +97,13 @@
         <thead><tr><th>Description</th><th class="num">Qty</th><th class="num">List price</th><th class="num">Subtotal</th></tr></thead>
         <tbody>${f.rows.length?f.rows.map(r=>{
           const qty=Number(r.qty)||0,cost=Number(r.cost)||0;
-          return `<tr><td>${escHtml(r.name)}</td><td class="num">${qty}</td><td class="num">${£(cost)}</td><td class="num">${£(qty*cost)}</td></tr>`;
+          return `<tr><td>${escHtml(r.name)}</td><td class="num">${qty}</td><td class="num">${fmt(cost)}</td><td class="num">${fmt(qty*cost)}</td></tr>`;
         }).join(''):'<tr><td colspan="4">No materials added.</td></tr>'}</tbody>
       </table>
       <div class="order-pdf-summary">
-        <div><span>List subtotal</span><strong>${£(f.subtotal)}</strong></div>
-        <div><span>Trade discount (${f.pct}%)</span><strong>−${£(f.saving)}</strong></div>
-        <div><span>Grand total</span><strong>${£(f.total)}</strong></div>
+        <div><span>List subtotal</span><strong>${fmt(f.subtotal)}</strong></div>
+        <div><span>Trade discount (${f.pct}%)</span><strong>−${fmt(f.saving)}</strong></div>
+        <div><span>Grand total</span><strong>${fmt(f.total)}</strong></div>
       </div>
       <div class="order-pdf-foot">Internal material purchase sheet. Prices shown are list costs before and after the trade discount set on the estimate.</div>`;
     host.appendChild(sheet);document.body.appendChild(host);
