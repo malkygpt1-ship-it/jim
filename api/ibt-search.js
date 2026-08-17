@@ -14,6 +14,18 @@ function normalizeSuggestion(x){
  }
  return {title:strip(x),url:''};
 }
+function unwrap(text){
+ let payload;try{payload=JSON.parse(text)}catch{payload=text}
+ let raw=payload?.d??payload;
+ if(typeof raw==='string'&&/<string\b/i.test(raw))raw=decode((raw.match(/<string\b[^>]*>([\s\S]*?)<\/string>/i)||[])[1]||raw);
+ if(typeof raw==='string'){
+  const trimmed=decode(raw).trim();
+  try{raw=JSON.parse(trimmed)}catch{
+   const arr=trimmed.match(/\[[\s\S]*\]/);if(arr){try{raw=JSON.parse(arr[0])}catch{}}
+  }
+ }
+ return Array.isArray(raw)?raw:(raw?[raw]:[]);
+}
 export default async function handler(req,res){
  try{
   const q=String(Array.isArray(req.query.q)?req.query.q[0]:req.query.q||'').trim();
@@ -24,11 +36,8 @@ export default async function handler(req,res){
    body:new URLSearchParams({input:q}).toString()
   });
   const text=await r.text();
-  let payload;try{payload=JSON.parse(text)}catch{payload=text}
-  const raw=payload?.d??payload;
-  const arr=Array.isArray(raw)?raw:(typeof raw==='string'?(()=>{try{return JSON.parse(raw)}catch{return [raw]}})():[]);
-  const products=arr.map(normalizeSuggestion).filter(x=>x.title).slice(0,40);
+  const products=unwrap(text).map(normalizeSuggestion).filter(x=>x.title).slice(0,40);
   res.setHeader('Cache-Control','s-maxage=3600, stale-while-revalidate=86400');
-  return res.status(200).json({q,status:r.status,products});
+  return res.status(200).json({q,status:r.status,products,...(!products.length?{rawPreview:text.slice(0,500)}:{})});
  }catch(e){console.error(e);return res.status(500).json({error:'IBT search failed'})}
 }
