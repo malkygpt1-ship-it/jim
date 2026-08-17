@@ -50,54 +50,24 @@
     <div class="bom-footer">
       <div class="bom-controls" aria-label="Material pricing controls">
         <div class="bom-setting-card trade-setting-card">
-          <div class="setting-copy">
-            <span class="setting-kicker">Trade discount</span>
-            <strong>Supplier discount</strong>
-            <small>Reduces the bill cost only</small>
-          </div>
-          <div class="setting-control">
-            <label for="tradeDiscount">Discount</label>
-            <select id="tradeDiscount">
-              <option value="0" selected>0%</option><option value="5">5%</option><option value="10">10%</option><option value="15">15%</option><option value="20">20%</option><option value="25">25%</option><option value="30">30%</option><option value="35">35%</option><option value="40">40%</option><option value="45">45%</option><option value="50">50%</option><option value="55">55%</option><option value="60">60%</option><option value="65">65%</option><option value="70">70%</option><option value="75">75%</option><option value="80">80%</option><option value="85">85%</option><option value="90">90%</option><option value="95">95%</option><option value="100">100%</option>
-            </select>
-          </div>
+          <div class="setting-copy"><span class="setting-kicker">Trade discount</span><strong>Supplier discount</strong><small>Reduces the bill cost only</small></div>
+          <div class="setting-control"><label for="tradeDiscount">Discount</label><select id="tradeDiscount"><option value="0" selected>0%</option><option value="5">5%</option><option value="10">10%</option><option value="15">15%</option><option value="20">20%</option><option value="25">25%</option><option value="30">30%</option><option value="35">35%</option><option value="40">40%</option><option value="45">45%</option><option value="50">50%</option><option value="55">55%</option><option value="60">60%</option><option value="65">65%</option><option value="70">70%</option><option value="75">75%</option><option value="80">80%</option><option value="85">85%</option><option value="90">90%</option><option value="95">95%</option><option value="100">100%</option></select></div>
           <div class="setting-result"><span>Saving</span><strong id="tradeSaving">−£0.00</strong></div>
         </div>
 
         <div class="bom-setting-card markup-setting-card">
-          <div class="setting-copy">
-            <span class="setting-kicker">Materials markup</span>
-            <strong>Customer markup</strong>
-            <small>Applied to list cost for the quote</small>
-          </div>
-          <div class="setting-control">
-            <label for="materialMarkup">Markup</label>
-            <select id="materialMarkup">
-              <option value="0">0%</option><option value="5">5%</option><option value="10">10%</option><option value="15">15%</option><option value="20">20%</option><option value="25">25%</option><option value="30" selected>30%</option><option value="35">35%</option><option value="40">40%</option><option value="45">45%</option><option value="50">50%</option><option value="55">55%</option><option value="60">60%</option><option value="65">65%</option><option value="70">70%</option><option value="75">75%</option><option value="80">80%</option><option value="85">85%</option><option value="90">90%</option><option value="95">95%</option><option value="100">100%</option>
-            </select>
-          </div>
+          <div class="setting-copy"><span class="setting-kicker">Materials markup</span><strong>Customer markup</strong><small>Applied to list cost for the quote</small></div>
+          <div class="setting-control"><label for="materialMarkup">Markup</label><select id="materialMarkup"><option value="0">0%</option><option value="5">5%</option><option value="10">10%</option><option value="15">15%</option><option value="20">20%</option><option value="25">25%</option><option value="30" selected>30%</option><option value="35">35%</option><option value="40">40%</option><option value="45">45%</option><option value="50">50%</option><option value="55">55%</option><option value="60">60%</option><option value="65">65%</option><option value="70">70%</option><option value="75">75%</option><option value="80">80%</option><option value="85">85%</option><option value="90">90%</option><option value="95">95%</option><option value="100">100%</option></select></div>
         </div>
       </div>
 
       <div class="bom-results">
         <div class="bom-grand-totals" aria-label="Bill of materials totals">
-          <div class="bom-total-card bom-bill-total">
-            <span>Bill cost</span>
-            <strong id="bomBillGrand">£0.00</strong>
-            <small>After trade discount</small>
-          </div>
-          <div class="bom-total-card bom-quote-total-card">
-            <span>Quoted materials</span>
-            <strong id="bomQuoteGrand">£0.00</strong>
-            <small>After material markup</small>
-          </div>
+          <div class="bom-total-card bom-bill-total"><span>Bill cost</span><strong id="bomBillGrand">£0.00</strong><small>After trade discount</small></div>
+          <div class="bom-total-card bom-quote-total-card"><span>Quoted materials</span><strong id="bomQuoteGrand">£0.00</strong><small>After material markup</small></div>
         </div>
-
         <div class="material-profit-card">
-          <div>
-            <span class="profit-label">Material profit</span>
-            <strong id="materialProfit">£0.00</strong>
-          </div>
+          <div><span class="profit-label">Material profit</span><strong id="materialProfit">£0.00</strong></div>
           <div class="profit-rate"><span>Profit on quoted materials</span><strong id="materialProfitPct">0.0%</strong></div>
           <p>This material profit considers both the <strong>trade discount</strong> on the bill cost and the <strong>material markup</strong> set above. The trade discount reduces your bill cost only; it does not reduce the price quoted to the customer.</p>
         </div>
@@ -105,12 +75,31 @@
     </div>
   </section>
 
-  <section class="card">
+  <section class="card tools-card">
     <div class="section-head"><div><span class="step">3</span><h2><a class="section-title-link" href="tools.html">Tool hire <span>↗</span></a></h2></div><button class="text-btn" id="addTool">+ Add tool</button></div>
     <div class="table-wrap">
-      <table><thead><tr><th>Description</th><th class="num">Qty</th><th class="num">Sell price</th><th class="num">Total</th><th></th></tr></thead><tbody id="toolsBody"></tbody></table>
+      <table class="tool-table"><thead><tr><th>Description</th><th class="num">Qty</th><th class="num tool-cost-col">Unit cost</th><th class="num tool-cost-col">Cost total</th><th class="num tool-quote-col">Quote price</th><th class="num tool-quote-col">Quote total</th><th></th></tr></thead><tbody id="toolsBody"></tbody></table>
     </div>
-    <div class="subtotal"><span>Tools subtotal</span><strong id="toolsSubtotal">£0.00</strong></div>
+    <div class="subtotal tool-screen-subtotal"><span>Tool list cost</span><strong id="toolCostSubtotal">£0.00</strong></div>
+
+    <div class="tool-pricing-footer">
+      <div class="bom-setting-card tool-markup-setting-card">
+        <div class="setting-copy"><span class="setting-kicker">Tool cost markup</span><strong>Customer tool markup</strong><small>Applied to tool cost for the quote</small></div>
+        <div class="setting-control"><label for="toolMarkup">Markup</label><select id="toolMarkup"><option value="0">0%</option><option value="5">5%</option><option value="10">10%</option><option value="15">15%</option><option value="20">20%</option><option value="25">25%</option><option value="30" selected>30%</option><option value="35">35%</option><option value="40">40%</option><option value="45">45%</option><option value="50">50%</option><option value="55">55%</option><option value="60">60%</option><option value="65">65%</option><option value="70">70%</option><option value="75">75%</option><option value="80">80%</option><option value="85">85%</option><option value="90">90%</option><option value="95">95%</option><option value="100">100%</option></select></div>
+      </div>
+
+      <div class="tool-results">
+        <div class="bom-grand-totals" aria-label="Tool hire totals">
+          <div class="bom-total-card tool-cost-total-card"><span>Tool cost</span><strong id="toolCostGrand">£0.00</strong><small>Internal tool cost</small></div>
+          <div class="bom-total-card tool-quote-total-card"><span>Quoted tools</span><strong id="toolQuoteGrand">£0.00</strong><small>After tool markup</small></div>
+        </div>
+        <div class="material-profit-card tool-profit-card">
+          <div><span class="profit-label">Tool profit</span><strong id="toolProfit">£0.00</strong></div>
+          <div class="profit-rate"><span>Profit on quoted tools</span><strong id="toolProfitPct">0.0%</strong></div>
+          <p>Tool profit is calculated from the <strong>tool cost</strong> in the Tools cost book and the <strong>tool markup</strong> set above. Changing the markup changes the customer quote, not the stored tool cost.</p>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section class="split">
@@ -128,7 +117,8 @@
       <div class="summary-row internal-summary"><span>Material list cost</span><span id="sumMaterialCost">£0.00</span></div>
       <div class="summary-row internal-summary bill-cost-row"><strong>Bill materials cost</strong><strong id="sumBillMaterials">£0.00</strong></div>
       <div class="summary-row"><span>Quoted materials</span><span id="sumMaterials">£0.00</span></div>
-      <div class="summary-row"><span>Tools</span><span id="sumTools">£0.00</span></div>
+      <div class="summary-row internal-summary"><span>Tool cost</span><span id="sumToolCost">£0.00</span></div>
+      <div class="summary-row"><span>Quoted tools</span><span id="sumTools">£0.00</span></div>
       <div class="summary-row"><span>Labour</span><span id="sumLabour">£520.00</span></div>
       <div class="grand"><span>Total quotation</span><strong id="grandTotal">£520.00</strong></div>
     </section>
@@ -140,19 +130,14 @@
   </section>
 </main>
 
-<div class="modal hidden" id="archiveModal">
-  <div class="modal-panel">
-    <div class="section-head"><h2>Saved estimates</h2><button class="icon-btn" id="closeArchive">×</button></div>
-    <div id="archiveList"></div>
-  </div>
-</div>
+<div class="modal hidden" id="archiveModal"><div class="modal-panel"><div class="section-head"><h2>Saved estimates</h2><button class="icon-btn" id="closeArchive">×</button></div><div id="archiveList"></div></div></div>
 
 <datalist id="materialOptions"></datalist>
 <datalist id="toolOptions"></datalist>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="data.js"></script>
 <script src="tool-catalog.js"></script>
-<script src="app-v2.js"></script>
+<script src="app-v3.js"></script>
 <script src="bom-profit.js"></script>
 </body>
 </html>
