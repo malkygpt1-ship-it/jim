@@ -10,17 +10,6 @@
     script.src = 'price-edit.js';
     document.body.appendChild(script);
   }
-  if (!document.querySelector('link[href="order-list-v2.css"]')) {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'order-list-v2.css';
-    document.head.appendChild(link);
-  }
-  if (!document.querySelector('script[src="order-list-v2.js"]')) {
-    const script = document.createElement('script');
-    script.src = 'order-list-v2.js';
-    document.body.appendChild(script);
-  }
 
   const moneyValue = (id) => {
     const el = document.getElementById(id);
