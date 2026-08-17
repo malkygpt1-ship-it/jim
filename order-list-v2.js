@@ -3,9 +3,17 @@
   const escHtml=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const safeFile=s=>String(s||'').trim().replace(/[\\/:*?"<>|]+/g,'-').replace(/\s+/g,' ')||'Material Order List';
 
+  function bindDownload(){
+    const button=document.getElementById('downloadOrderPdf');
+    if(!button||button.dataset.bound==='1')return;
+    button.dataset.bound='1';
+    button.addEventListener('click',downloadOrderPdf);
+  }
+
   function ensureLayout(){
     const card=document.querySelector('.order-card');
-    if(!card||document.getElementById('orderPurchaseBody'))return;
+    if(!card)return;
+    if(document.getElementById('orderPurchaseBody')){bindDownload();return}
     const head=card.querySelector('.section-head');
     if(head){
       const title=head.querySelector('h2');if(title)title.textContent='Material purchase list';
@@ -16,7 +24,6 @@
       const download=document.createElement('button');
       download.type='button';download.className='primary';download.id='downloadOrderPdf';download.textContent='Download PDF';
       actions.appendChild(download);
-      download.addEventListener('click',downloadOrderPdf);
     }
     const legacy=document.getElementById('orderList');
     if(!legacy)return;
@@ -37,6 +44,7 @@
       </div>
       <p class="order-note">Grand total is the material list subtotal less the trade discount set in Section 2.</p>`;
     legacy.insertAdjacentElement('afterend',detailed);
+    bindDownload();
   }
 
   function currentRows(){
@@ -133,5 +141,6 @@
   const sum=document.getElementById('sumMaterialCost');
   if(sum)new MutationObserver(()=>queueMicrotask(render)).observe(sum,{childList:true,subtree:true,characterData:true});
   ensureLayout();
+  bindDownload();
   setTimeout(render,0);setTimeout(render,250);setTimeout(render,1000);
 })();
