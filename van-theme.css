@@ -39,6 +39,7 @@ body{background:linear-gradient(180deg,#e7edef 0,#f3f6f7 280px,#edf2f4 100%)}
 
 label{color:#5f7078}
 input,textarea,select{border-color:#c6d3d9;background:#fff}
+textarea{resize:none}
 input:focus,textarea:focus,select:focus{border-color:#789bab;box-shadow:0 0 0 3px #dbe8ed}
 .row-input{background:#f4f7f8}
 .suggestion:hover,.suggestion:focus{background:#eef5df}
