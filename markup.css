@@ -1,0 +1,6 @@
+.summary-row.markup-control{align-items:center}
+.summary-row.markup-control label{display:block}
+.summary-row.markup-control select{width:110px;padding:7px;text-align:right}
+.derived-price{padding:8px;text-align:right;font-weight:750;color:var(--brand);white-space:nowrap}
+body.pdf-export .markup-control{display:none!important}
+@media print{.markup-control{display:none!important}}
