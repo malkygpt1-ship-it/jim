@@ -2,6 +2,7 @@
 .summary-row.markup-control label{display:block}
 .summary-row.markup-control select{width:110px;padding:7px;text-align:right}
 .derived-price{padding:8px;text-align:right;font-weight:750;color:var(--brand);white-space:nowrap}
+.customer-top-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
 .bom-table{min-width:900px}
 .bom-table .bom-unit-cost,.bom-table .bom-line-cost,.bom-table .bom-quote-total{white-space:nowrap}
 .bom-table .bom-cost-col{background:#fafbf9}
@@ -51,7 +52,8 @@ body.pdf-export .bom-table th:nth-child(2),body.pdf-export .bom-table td:nth-chi
 body.pdf-export .bom-table th:nth-child(5),body.pdf-export .bom-table td:nth-child(5){width:18%}
 body.pdf-export .bom-table th:nth-child(6),body.pdf-export .bom-table td:nth-child(6){width:18%}
 
+@media(max-width:1100px){.customer-top-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:1000px){.bom-footer{grid-template-columns:1fr}.bom-controls{grid-template-columns:1fr 1fr}.bom-results{width:100%}}
-@media(max-width:800px){.bom-table{min-width:820px}.bom-controls{grid-template-columns:1fr}.bom-grand-totals,.material-profit-card{width:100%}.bom-total-card strong{font-size:22px}.material-profit-card{grid-template-columns:1fr}.profit-rate{text-align:left;margin-top:6px}}
-@media(max-width:520px){.bom-grand-totals{grid-template-columns:1fr}.bom-setting-card{grid-template-columns:1fr}.setting-control{min-width:0}.setting-control select{width:100%}}
+@media(max-width:800px){.customer-top-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bom-table{min-width:820px}.bom-controls{grid-template-columns:1fr}.bom-grand-totals,.material-profit-card{width:100%}.bom-total-card strong{font-size:22px}.material-profit-card{grid-template-columns:1fr}.profit-rate{text-align:left;margin-top:6px}}
+@media(max-width:520px){.customer-top-grid{grid-template-columns:1fr}.bom-grand-totals{grid-template-columns:1fr}.bom-setting-card{grid-template-columns:1fr}.setting-control{min-width:0}.setting-control select{width:100%}}
 @media print{.markup-control,.internal-summary,.bom-cost-col,.bom-screen-subtotal,.bom-footer{display:none!important}.bom-table{min-width:0!important;table-layout:fixed}}
