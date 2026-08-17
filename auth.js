@@ -21,7 +21,8 @@
     return;
   }
   window.GF_AUTH = {
-    logout() {
+    async logout() {
+      try{await fetch('/api/logout',{method:'POST',credentials:'same-origin'})}catch{}
       sessionStorage.removeItem(AUTH_KEY);
       location.replace('login.html');
     }
