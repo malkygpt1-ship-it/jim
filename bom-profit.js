@@ -11,7 +11,7 @@
     currency: 'GBP'
   }).format(Number.isFinite(n) ? n : 0);
 
-  function updateBomProfit() {
+  function updateProfitPanels() {
     const bill = moneyValue('sumBillMaterials');
     const quoted = moneyValue('sumMaterials');
     const profit = quoted - bill;
@@ -26,22 +26,36 @@
     if (quoteGrand) quoteGrand.textContent = money(quoted);
     if (profitEl) profitEl.textContent = money(profit);
     if (profitPctEl) profitPctEl.textContent = `${profitPct.toFixed(1)}%`;
+
+    const toolCost = moneyValue('sumToolCost');
+    const toolQuote = moneyValue('sumTools');
+    const toolProfit = toolQuote - toolCost;
+    const toolProfitPct = toolQuote > 0 ? (toolProfit / toolQuote) * 100 : 0;
+
+    const toolCostGrand = document.getElementById('toolCostGrand');
+    const toolQuoteGrand = document.getElementById('toolQuoteGrand');
+    const toolProfitEl = document.getElementById('toolProfit');
+    const toolProfitPctEl = document.getElementById('toolProfitPct');
+
+    if (toolCostGrand) toolCostGrand.textContent = money(toolCost);
+    if (toolQuoteGrand) toolQuoteGrand.textContent = money(toolQuote);
+    if (toolProfitEl) toolProfitEl.textContent = money(toolProfit);
+    if (toolProfitPctEl) toolProfitPctEl.textContent = `${toolProfitPct.toFixed(1)}%`;
   }
 
   function watch(id) {
     const el = document.getElementById(id);
     if (!el) return;
-    new MutationObserver(updateBomProfit).observe(el, {
+    new MutationObserver(updateProfitPanels).observe(el, {
       subtree: true,
       childList: true,
       characterData: true
     });
   }
 
-  watch('sumBillMaterials');
-  watch('sumMaterials');
-  document.addEventListener('input', () => queueMicrotask(updateBomProfit));
-  document.addEventListener('change', () => queueMicrotask(updateBomProfit));
-  document.addEventListener('click', () => queueMicrotask(updateBomProfit));
-  requestAnimationFrame(updateBomProfit);
+  ['sumBillMaterials','sumMaterials','sumToolCost','sumTools'].forEach(watch);
+  document.addEventListener('input', () => queueMicrotask(updateProfitPanels));
+  document.addEventListener('change', () => queueMicrotask(updateProfitPanels));
+  document.addEventListener('click', () => queueMicrotask(updateProfitPanels));
+  requestAnimationFrame(updateProfitPanels);
 })();
