@@ -7,6 +7,9 @@
 .bom-table .bom-unit-cost,.bom-table .bom-line-cost,.bom-table .bom-quote-total{white-space:nowrap}
 .bom-table .bom-cost-col{background:#fafbf9}
 .bill-cost-row{background:var(--soft);margin:2px -8px;padding:9px 8px;border-radius:8px;border-bottom:0}
+.section-title-link{display:inline-flex;align-items:center;gap:7px;color:inherit;text-decoration:none}
+.section-title-link:hover{color:var(--brand2)}
+.section-title-link span{font-size:13px;color:var(--brand2)}
 
 .bom-footer{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);display:grid;grid-template-columns:minmax(280px,1fr) minmax(520px,610px);gap:18px;align-items:start}
 .bom-controls{display:grid;gap:12px}
