@@ -46,26 +46,55 @@
     <div class="subtotal bom-screen-subtotal"><span>Material list cost</span><strong id="materialsSubtotal">£0.00</strong></div>
 
     <div class="bom-footer">
-      <div class="bom-grand-totals" aria-label="Bill of materials totals">
-        <div class="bom-total-card bom-bill-total">
-          <span>Bill cost</span>
-          <strong id="bomBillGrand">£0.00</strong>
-          <small>After trade discount</small>
+      <div class="bom-controls" aria-label="Material pricing controls">
+        <div class="bom-setting-card trade-setting-card">
+          <div class="setting-copy">
+            <span class="setting-kicker">Trade discount</span>
+            <strong>Supplier discount</strong>
+            <small>Reduces the bill cost only</small>
+          </div>
+          <div class="setting-control">
+            <label for="tradeDiscount">Discount</label>
+            <div class="percent-input"><input id="tradeDiscount" type="number" min="0" max="100" step="0.5" value="0"><span>%</span></div>
+          </div>
+          <div class="setting-result"><span>Saving</span><strong id="tradeSaving">−£0.00</strong></div>
         </div>
-        <div class="bom-total-card bom-quote-total-card">
-          <span>Quoted materials</span>
-          <strong id="bomQuoteGrand">£0.00</strong>
-          <small>After material markup</small>
+
+        <div class="bom-setting-card markup-setting-card">
+          <div class="setting-copy">
+            <span class="setting-kicker">Materials markup</span>
+            <strong>Customer markup</strong>
+            <small>Applied to list cost for the quote</small>
+          </div>
+          <div class="setting-control">
+            <label for="materialMarkup">Markup</label>
+            <select id="materialMarkup"><option value="0">0%</option><option value="10">10%</option><option value="15">15%</option><option value="20">20%</option><option value="25">25%</option><option value="30" selected>30%</option><option value="35">35%</option><option value="40">40%</option><option value="50">50%</option><option value="75">75%</option><option value="100">100%</option></select>
+          </div>
         </div>
       </div>
 
-      <div class="material-profit-card">
-        <div>
-          <span class="profit-label">Material profit</span>
-          <strong id="materialProfit">£0.00</strong>
+      <div class="bom-results">
+        <div class="bom-grand-totals" aria-label="Bill of materials totals">
+          <div class="bom-total-card bom-bill-total">
+            <span>Bill cost</span>
+            <strong id="bomBillGrand">£0.00</strong>
+            <small>After trade discount</small>
+          </div>
+          <div class="bom-total-card bom-quote-total-card">
+            <span>Quoted materials</span>
+            <strong id="bomQuoteGrand">£0.00</strong>
+            <small>After material markup</small>
+          </div>
         </div>
-        <div class="profit-rate"><span>Profit on quoted materials</span><strong id="materialProfitPct">0.0%</strong></div>
-        <p>This material profit considers both the <strong>trade discount</strong> on the bill cost and the <strong>material markup</strong> set in Quote Summary. The trade discount reduces your bill cost only; it does not reduce the price quoted to the customer.</p>
+
+        <div class="material-profit-card">
+          <div>
+            <span class="profit-label">Material profit</span>
+            <strong id="materialProfit">£0.00</strong>
+          </div>
+          <div class="profit-rate"><span>Profit on quoted materials</span><strong id="materialProfitPct">0.0%</strong></div>
+          <p>This material profit considers both the <strong>trade discount</strong> on the bill cost and the <strong>material markup</strong> set above. The trade discount reduces your bill cost only; it does not reduce the price quoted to the customer.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -91,9 +120,7 @@
     <section class="card totals-card">
       <div class="section-head"><div><span class="step">5</span><h2>Quote summary</h2></div></div>
       <div class="summary-row internal-summary"><span>Material list cost</span><span id="sumMaterialCost">£0.00</span></div>
-      <div class="summary-row internal-summary trade-control"><label>Trade discount</label><input id="tradeDiscount" type="number" min="0" max="100" step="0.5" value="0"><span id="tradeSaving">−£0.00</span></div>
       <div class="summary-row internal-summary bill-cost-row"><strong>Bill materials cost</strong><strong id="sumBillMaterials">£0.00</strong></div>
-      <div class="summary-row markup-control"><label>Materials markup</label><select id="materialMarkup"><option value="0">0%</option><option value="10">10%</option><option value="15">15%</option><option value="20">20%</option><option value="25">25%</option><option value="30" selected>30%</option><option value="35">35%</option><option value="40">40%</option><option value="50">50%</option><option value="75">75%</option><option value="100">100%</option></select></div>
       <div class="summary-row"><span>Quoted materials</span><span id="sumMaterials">£0.00</span></div>
       <div class="summary-row"><span>Tools</span><span id="sumTools">£0.00</span></div>
       <div class="summary-row"><span>Labour</span><span id="sumLabour">£520.00</span></div>
