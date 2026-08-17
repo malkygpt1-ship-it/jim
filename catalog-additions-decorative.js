@@ -19,10 +19,17 @@ window.GF_CATALOG_ADDITIONS_DECORATIVE=[
 {id:"mat-581",name:"Moonstone Decorative Chip 20mm 25kg Bag",cost:8.00},
 {id:"mat-582",name:"Moray Diamond Mix IBT Bulk Bag",cost:198.00},
 {id:"mat-583",name:"Moreland Black Basalt Chip 20mm IBT Bulk Bag",cost:142.45},
-{id:"mat-584",name:"RED Granite Chip Correnie 20mm IBT Bulk Bag",cost:168.35},
+{id:"mat-584",name:"RED Granite Chip Correnie 20MM IBT Bulk Bag",cost:168.35},
 {id:"mat-585",name:"Scottish Beach Pebbles 14mm - 20mm IBT Bulk Bag",cost:132.37},
 {id:"mat-586",name:"Scottish Beach Pebbles 20mm - 30mm 25kg Bag",cost:7.68},
 {id:"mat-587",name:"Scottish Beach Pebbles 20mm - 30mm IBT Bulk Bag",cost:125.00},
 {id:"mat-588",name:"Scottish Beach Pebbles 40mm - 80mm 25kg Bag",cost:9.16},
-{id:"mat-589",name:"Scottish Beach Pebbles 50mm - 80mm IBT Bulk Bag",cost:145.68}
+{id:"mat-589",name:"Scottish Beach Pebbles 50mm - 80mm IBT Bulk Bag",cost:145.68},
+{id:"mat-590",name:"Blue Slate 20mm 25kg Bag",cost:9.28},
+{id:"mat-591",name:"Blue Slate 20mm IBT Bulk Bag",cost:142.97},
+{id:"mat-592",name:"Green Slate 20mm 25kg Bag",cost:9.28},
+{id:"mat-593",name:"Green Slate 20mm IBT Bulk Bag",cost:142.97},
+{id:"mat-594",name:"Plum Slate 20mm 25kg Bag",cost:9.28},
+{id:"mat-595",name:"Plum Slate 20mm IBT Bulk Bag",cost:142.97},
+{id:"mat-596",name:"Plum Slate 40mm IBT Bulk Bag",cost:181.94}
 ];
