@@ -134,7 +134,6 @@ function bindEvents(){
     }
   });
   $('#addMaterialRecord').onclick=()=>{materials.unshift({id:`custom-${crypto.randomUUID()}`,name:'New material',cost:0});saveMaterials();render();setTimeout(()=>$('#materialsAdminBody input[data-i="0"]')?.select(),0)};
-  $('#resetMaterials').onclick=()=>{if(confirm('Restore the complete original materials list and discard your material edits?')){materials=applySupplierData(structuredClone(BASE));saveMaterials();render()}};
 }
 async function init(){
   try{
