@@ -16,6 +16,9 @@
 
 body{background:linear-gradient(180deg,#e7edef 0,#f3f6f7 280px,#edf2f4 100%)}
 .topbar{
+  position:sticky;
+  top:0;
+  z-index:100;
   background:linear-gradient(135deg,#638797 0,#4f7488 48%,#355669 100%);
   color:#f7fbf2;
   border-bottom:4px solid var(--accent);
@@ -83,13 +86,13 @@ input:focus,textarea:focus,select:focus{border-color:#789bab;box-shadow:0 0 0 3p
 .archive-actions .load{background:#e9f2d8;color:#365b70}
 
 body.pdf-export{background:white}
-body.pdf-export .topbar{background:white;color:#22323a;border-bottom-color:#486f86;box-shadow:none}
+body.pdf-export .topbar{position:static;top:auto;background:white;color:#22323a;border-bottom-color:#486f86;box-shadow:none}
 body.pdf-export .topbar h1,body.pdf-export .topbar .eyebrow{color:#365667}
 body.pdf-export .topbar p{color:#6b787e}
 
 @media print{
   body{background:white}
-  .topbar{background:white;color:#22323a;border-bottom-color:#486f86;box-shadow:none}
+  .topbar{position:static;top:auto;background:white;color:#22323a;border-bottom-color:#486f86;box-shadow:none}
   .topbar h1,.topbar .eyebrow{color:#365667}
   .topbar p{color:#6b787e}
 }
