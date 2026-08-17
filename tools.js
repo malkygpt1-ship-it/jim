@@ -14,6 +14,12 @@ function margin(t){
   if(!sell)return 0;
   return ((sell-cost)/sell)*100;
 }
+function updateRowSummary(el,t){
+  const row=el.closest('tr');if(!row)return;
+  const m=margin(t),marginEl=row.querySelector('.tool-margin'),profitEl=row.querySelector('.tool-profit');
+  if(marginEl){marginEl.textContent=`${m.toFixed(1)}%`;marginEl.classList.toggle('negative',m<0)}
+  if(profitEl)profitEl.textContent=money((+t.sell||0)-(+t.cost||0));
+}
 function render(){
   const q=$('#toolsSearch').value.trim().toLowerCase();
   const rows=tools.map((t,i)=>({...t,_i:i})).filter(t=>!q||String(t.name||'').toLowerCase().includes(q));
@@ -36,7 +42,7 @@ function bindEvents(){
       tools[i][el.dataset.f]=el.dataset.f==='name'?el.value:+el.value;
       $('#toolsSaveState').textContent='Saving…';
       saveTools();
-      if(el.dataset.f!=='name')render();
+      if(el.dataset.f!=='name')updateRowSummary(el,tools[i]);
     }
   });
   document.addEventListener('click',e=>{
