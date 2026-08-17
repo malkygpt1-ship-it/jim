@@ -6,8 +6,8 @@
 <title>Good Foundations Tools</title>
 <script src="auth.js"></script>
 <link rel="stylesheet" href="styles.css" />
-<link rel="stylesheet" href="materials-book.css" />
-<link rel="stylesheet" href="tools-book.css" />
+<link rel="stylesheet" href="materials-book.css?v=2" />
+<link rel="stylesheet" href="tools-book.css?v=2" />
 </head>
 <body>
 <header class="topbar">
@@ -29,24 +29,29 @@
       <div><span class="step">T</span><h2>Tools cost book</h2></div>
       <span id="toolsSaveState" class="save-state">Saved locally</span>
     </div>
-    <div class="materials-toolbar tools-toolbar">
+    <div class="materials-toolbar tools-toolbar tools-toolbar-view">
       <input id="toolsSearch" placeholder="Search tool or hire item..." autocomplete="off">
+      <div class="view-toggle" role="group" aria-label="Tools view">
+        <button type="button" class="view-btn" data-tool-view="list">☰ List</button>
+        <button type="button" class="view-btn" data-tool-view="grid">▦ Grid</button>
+      </div>
     </div>
     <div class="supplier-legend tools-legend">
       <span><span class="supplier-dot linked"></span> Cost price is the internal hire cost used by the estimator</span>
       <span><span class="supplier-dot pending"></span> Customer price is calculated from the tool markup set on each estimate</span>
     </div>
-    <div class="table-wrap materials-book-wrap">
+    <div id="toolsListView" class="table-wrap materials-book-wrap">
       <table class="materials-admin-table materials-book-table tools-book-table">
         <thead><tr><th>Item</th><th>Description</th><th class="num">Cost price</th><th></th></tr></thead>
         <tbody id="toolsAdminBody"></tbody>
       </table>
     </div>
+    <div id="toolsGridView" class="catalog-grid tools-catalog-grid" hidden></div>
     <p class="muted materials-count" id="toolsCount"></p>
   </section>
 </main>
 <script src="data.js"></script>
 <script src="tool-catalog.js"></script>
-<script src="tools.js"></script>
+<script src="tools.js?v=2"></script>
 </body>
 </html>
