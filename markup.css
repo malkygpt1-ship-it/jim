@@ -1,62 +1,11 @@
-.summary-row.markup-control{align-items:center}
-.summary-row.markup-control label{display:block}
-.summary-row.markup-control select{width:110px;padding:7px;text-align:right}
-.derived-price{padding:8px;text-align:right;font-weight:750;color:var(--brand);white-space:nowrap}
-.customer-top-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
-.bom-table,.tool-table{min-width:900px}
-.bom-table .bom-unit-cost,.bom-table .bom-line-cost,.bom-table .bom-quote-total,.tool-table .tool-unit-cost,.tool-table .tool-line-cost,.tool-table .tool-quote-total{white-space:nowrap}
-.bom-table .bom-cost-col,.tool-table .tool-cost-col{background:#fafbf9}
-.bill-cost-row{background:var(--soft);margin:2px -8px;padding:9px 8px;border-radius:8px;border-bottom:0}
-.section-title-link{display:inline-flex;align-items:center;gap:7px;color:inherit;text-decoration:none}
-.section-title-link:hover{color:var(--brand2)}
-.section-title-link span{font-size:13px;color:var(--brand2)}
+.summary-row.markup-control{align-items:center}.summary-row.markup-control label{display:block}.summary-row.markup-control select{width:110px;padding:7px;text-align:right}.derived-price{padding:8px;text-align:right;font-weight:750;color:var(--brand);white-space:nowrap}.customer-top-grid{grid-template-columns:repeat(5,minmax(0,1fr))}.bom-table,.tool-table{min-width:900px}.bom-table .bom-unit-cost,.bom-table .bom-line-cost,.bom-table .bom-quote-total,.tool-table .tool-unit-cost,.tool-table .tool-line-cost,.tool-table .tool-quote-total{white-space:nowrap}.bom-table .bom-cost-col,.tool-table .tool-cost-col{background:#fafbf9}.bill-cost-row{background:var(--soft);margin:2px -8px;padding:9px 8px;border-radius:8px;border-bottom:0}.section-title-link{display:inline-flex;align-items:center;gap:7px;color:inherit;text-decoration:none}.section-title-link:hover{color:var(--brand2)}.section-title-link span{font-size:13px;color:var(--brand2)}
 
-.bom-footer,.tool-pricing-footer{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);display:grid;grid-template-columns:minmax(280px,1fr) minmax(520px,610px);gap:18px;align-items:start}
-.bom-controls{display:grid;gap:12px}
-.bom-setting-card{min-height:112px;border:1px solid #cbd9d1;border-radius:14px;padding:14px 16px;background:#f8fbf9;box-shadow:0 4px 14px #16251c0b;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 16px;align-items:center}
-.bom-setting-card.trade-setting-card{background:#f7f9f8}
-.bom-setting-card.markup-setting-card,.bom-setting-card.tool-markup-setting-card{background:var(--soft);border-color:#c3d7ca}
-.setting-copy{display:grid;gap:2px}
-.setting-kicker{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--brand2)}
-.setting-copy strong{font-size:18px;line-height:1.15;color:var(--ink)}
-.setting-copy small{font-size:11px;color:var(--muted)}
-.setting-control{display:grid;gap:5px;min-width:116px}
-.setting-control label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-.setting-control input,.setting-control select{height:46px;border:1px solid #bdcec4;border-radius:11px;background:white;padding:8px 10px;font-size:18px;font-weight:800;color:var(--brand);text-align:right;box-shadow:0 2px 8px #173d2b0b}
-.setting-control select{min-width:116px}
-.percent-input{position:relative}
-.percent-input input{padding-right:30px}
-.percent-input span{position:absolute;right:11px;top:50%;transform:translateY(-50%);font-size:15px;font-weight:800;color:var(--brand2);pointer-events:none}
-.setting-result{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;padding-top:9px;border-top:1px solid #dce6e0;color:var(--muted);font-size:11px}
-.setting-result strong{font-size:16px;color:var(--brand2)}
+/* Compact estimator pricing layout */
+.pricing-section-head{gap:14px;align-items:center}.pricing-head-actions{margin-left:auto;display:flex;align-items:end;justify-content:flex-end;gap:10px;flex-wrap:wrap}.header-selector{display:grid;gap:4px;margin:0;min-width:112px}.header-selector span{font-size:9px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}.header-selector select{height:36px;min-width:112px;padding:5px 28px 5px 10px;border:1px solid #bdcec4;border-radius:10px;background:#fff;font-size:14px;font-weight:800;color:var(--brand);text-align:right}.pricing-head-actions .text-btn{height:36px;align-self:end}.compact-pricing-card .table-wrap{margin-top:8px}.compact-result-row{display:grid;grid-template-columns:1fr 1fr 1.25fr;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}.compact-result-card{min-height:88px;border:1px solid var(--line);border-radius:13px;padding:12px 14px;background:#f7f9f8;display:grid;align-content:center;gap:3px;box-shadow:0 3px 12px #16251c08}.compact-result-card>span,.compact-result-card>div>span{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}.compact-result-card>strong,.compact-result-card>div>strong{font-size:25px;line-height:1.05;color:var(--brand)}.compact-result-card small{font-size:10px;color:var(--muted)}.compact-result-card small b{color:var(--ink)}.quote-result-card{background:var(--soft);border-color:#cadbd1}.profit-result-card{background:linear-gradient(135deg,#eef5f1,#f8fbf9);border-color:#c8d9cf;grid-template-columns:1fr auto;align-items:center;gap:12px}.profit-result-card>div{display:grid;gap:3px}.compact-profit-rate{text-align:right}.compact-profit-rate strong{font-size:18px!important;color:var(--brand2)!important}.cost-result-card #tradeSaving{color:var(--brand2)}
 
-.bom-results,.tool-results{min-width:0}
-.bom-grand-totals{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.bom-total-card{border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;gap:2px;box-shadow:0 4px 14px #16251c0b}
-.bom-total-card span{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
-.bom-total-card strong{font-size:26px;line-height:1.1;color:var(--brand)}
-.bom-total-card small{font-size:11px;color:var(--muted)}
-.bom-bill-total,.tool-cost-total-card{background:#f7f9f8}
-.bom-quote-total-card,.tool-quote-total-card{background:var(--soft);border-color:#cadbd1}
-.material-profit-card{width:100%;margin:12px 0 0;border:1px solid #c8d9cf;background:linear-gradient(135deg,#eef5f1,#f8fbf9);border-radius:14px;padding:14px 16px;display:grid;grid-template-columns:1fr auto;gap:4px 18px;align-items:end}
-.material-profit-card>div:first-child{display:grid;gap:2px}
-.profit-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--brand2)}
-.material-profit-card #materialProfit,.material-profit-card #toolProfit{font-size:30px;line-height:1.05;color:var(--brand)}
-.profit-rate{display:grid;gap:2px;text-align:right}
-.profit-rate span{font-size:10px;color:var(--muted);font-weight:700}
-.profit-rate strong{font-size:18px;color:var(--brand2)}
-.material-profit-card p{grid-column:1/-1;margin:8px 0 0;padding-top:8px;border-top:1px solid #d7e4dc;color:var(--muted);font-size:11px;line-height:1.4}
-.material-profit-card p strong{color:var(--ink)}
+body.pdf-export .pricing-head-actions .header-selector,body.pdf-export .compact-result-row,body.pdf-export .internal-summary,body.pdf-export .bom-cost-col,body.pdf-export .tool-cost-col{display:none!important}body.pdf-export .bom-table,body.pdf-export .tool-table{min-width:0!important;table-layout:fixed}body.pdf-export .bom-table th:first-child,body.pdf-export .bom-table td:first-child,body.pdf-export .tool-table th:first-child,body.pdf-export .tool-table td:first-child{width:54%}body.pdf-export .bom-table th:nth-child(2),body.pdf-export .bom-table td:nth-child(2),body.pdf-export .tool-table th:nth-child(2),body.pdf-export .tool-table td:nth-child(2){width:10%}body.pdf-export .bom-table th:nth-child(5),body.pdf-export .bom-table td:nth-child(5),body.pdf-export .tool-table th:nth-child(5),body.pdf-export .tool-table td:nth-child(5){width:18%}body.pdf-export .bom-table th:nth-child(6),body.pdf-export .bom-table td:nth-child(6),body.pdf-export .tool-table th:nth-child(6),body.pdf-export .tool-table td:nth-child(6){width:18%}
 
-body.pdf-export .markup-control,body.pdf-export .internal-summary,body.pdf-export .bom-cost-col,body.pdf-export .bom-screen-subtotal,body.pdf-export .bom-footer,body.pdf-export .tool-cost-col,body.pdf-export .tool-screen-subtotal,body.pdf-export .tool-pricing-footer{display:none!important}
-body.pdf-export .bom-table,body.pdf-export .tool-table{min-width:0!important;table-layout:fixed}
-body.pdf-export .bom-table th:first-child,body.pdf-export .bom-table td:first-child,body.pdf-export .tool-table th:first-child,body.pdf-export .tool-table td:first-child{width:54%}
-body.pdf-export .bom-table th:nth-child(2),body.pdf-export .bom-table td:nth-child(2),body.pdf-export .tool-table th:nth-child(2),body.pdf-export .tool-table td:nth-child(2){width:10%}
-body.pdf-export .bom-table th:nth-child(5),body.pdf-export .bom-table td:nth-child(5),body.pdf-export .tool-table th:nth-child(5),body.pdf-export .tool-table td:nth-child(5){width:18%}
-body.pdf-export .bom-table th:nth-child(6),body.pdf-export .bom-table td:nth-child(6),body.pdf-export .tool-table th:nth-child(6),body.pdf-export .tool-table td:nth-child(6){width:18%}
-
-@media(max-width:1100px){.customer-top-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:1000px){.bom-footer,.tool-pricing-footer{grid-template-columns:1fr}.bom-controls{grid-template-columns:1fr 1fr}.bom-results,.tool-results{width:100%}}
-@media(max-width:800px){.customer-top-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bom-table,.tool-table{min-width:820px}.bom-controls{grid-template-columns:1fr}.bom-grand-totals,.material-profit-card{width:100%}.bom-total-card strong{font-size:22px}.material-profit-card{grid-template-columns:1fr}.profit-rate{text-align:left;margin-top:6px}}
-@media(max-width:520px){.customer-top-grid{grid-template-columns:1fr}.bom-grand-totals{grid-template-columns:1fr}.bom-setting-card{grid-template-columns:1fr}.setting-control{min-width:0}.setting-control select{width:100%}}
-@media print{.markup-control,.internal-summary,.bom-cost-col,.bom-screen-subtotal,.bom-footer,.tool-cost-col,.tool-screen-subtotal,.tool-pricing-footer{display:none!important}.bom-table,.tool-table{min-width:0!important;table-layout:fixed}}
+@media(max-width:1100px){.customer-top-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.pricing-section-head{align-items:flex-start}.pricing-head-actions{max-width:62%}}
+@media(max-width:850px){.customer-top-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.bom-table,.tool-table{min-width:820px}.pricing-section-head{display:grid}.pricing-head-actions{margin-left:0;max-width:none;justify-content:flex-start}.compact-result-row{grid-template-columns:1fr 1fr}.profit-result-card{grid-column:1/-1}}
+@media(max-width:560px){.customer-top-grid{grid-template-columns:1fr}.pricing-head-actions{display:grid;grid-template-columns:1fr 1fr}.pricing-head-actions .text-btn{grid-column:1/-1}.header-selector select{width:100%}.compact-result-row{grid-template-columns:1fr}.profit-result-card{grid-column:auto}}
+@media print{.pricing-head-actions .header-selector,.compact-result-row,.internal-summary,.bom-cost-col,.tool-cost-col{display:none!important}.bom-table,.tool-table{min-width:0!important;table-layout:fixed}}
