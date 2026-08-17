@@ -111,7 +111,8 @@ function recalc(){
   $('#sumMaterials').textContent=money(t.mat);
   if($('#toolCostSubtotal'))$('#toolCostSubtotal').textContent=money(t.toolCost);
   if($('#sumToolCost'))$('#sumToolCost').textContent=money(t.toolCost);
-  $('#toolsSubtotal').textContent=$('#sumTools').textContent=money(t.tool);
+  if($('#toolsSubtotal'))$('#toolsSubtotal').textContent=money(t.tool);
+  $('#sumTools').textContent=money(t.tool);
   $('#labourSubtotal').textContent=$('#sumLabour').textContent=money(t.labour);
   $('#grandTotal').textContent=money(t.total);
   const rows=state.materials.filter(r=>r.name&&+r.qty>0);
