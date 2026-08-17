@@ -15,7 +15,7 @@ function applySupplierData(list){
   return list.map(m=>{
     const meta=SUPPLIER_DATA[m.id];
     if(!meta)return m;
-    return {...m,...meta,name:m.name,cost:m.cost,sell:m.sell,id:m.id,sourceRow:m.sourceRow};
+    return {...m,...meta,name:m.name,cost:m.cost,id:m.id,sourceRow:m.sourceRow};
   });
 }
 function loadMaterials(){
@@ -74,7 +74,6 @@ function render(runEnrichment=true){
     <td>${descriptionCell(m)}</td>
     <td><code class="sku-code">${esc(m.supplierSku||'—')}</code></td>
     <td><input class="row-input money" type="number" min="0" step="0.01" data-i="${m._i}" data-f="cost" value="${Number(m.cost||0).toFixed(2)}"></td>
-    <td><input class="row-input money" type="number" min="0" step="0.01" data-i="${m._i}" data-f="sell" value="${Number(m.sell||0).toFixed(2)}"></td>
     <td>${supplierCell(m)}</td>
     <td><button class="remove" data-remove-material="${m._i}" title="Remove material">×</button></td>
   </tr>`).join('');
@@ -94,11 +93,12 @@ async function enrichSupplierMeta(rows){
       const data=await r.json();
       const m=materials.find(x=>x.id===row.id);
       if(!m)return;
-      if(data.sku&&!m.supplierSku){m.supplierSku=data.sku;changed=true}
-      if(data.image&&!m.supplierImage){m.supplierImage=data.image;changed=true}
-      if(data.title&&!m.supplierTitle){m.supplierTitle=data.title;changed=true}
-      if(data.supplier&&!m.supplier){m.supplier=data.supplier;changed=true}
-      if(changed)m.supplierCheckedAt=new Date().toISOString();
+      let rowChanged=false;
+      if(data.sku&&!m.supplierSku){m.supplierSku=data.sku;rowChanged=true}
+      if(data.image&&!m.supplierImage){m.supplierImage=data.image;rowChanged=true}
+      if(data.title&&!m.supplierTitle){m.supplierTitle=data.title;rowChanged=true}
+      if(data.supplier&&!m.supplier){m.supplier=data.supplier;rowChanged=true}
+      if(rowChanged){m.supplierCheckedAt=new Date().toISOString();changed=true}
     }catch(err){console.warn('Could not enrich supplier metadata',row.id,err)}
   }));
   if(changed){saveMaterials();render(false)}
@@ -133,7 +133,7 @@ function bindEvents(){
       }
     }
   });
-  $('#addMaterialRecord').onclick=()=>{materials.unshift({id:`custom-${crypto.randomUUID()}`,name:'New material',cost:0,sell:0});saveMaterials();render();setTimeout(()=>$('#materialsAdminBody input[data-i="0"]')?.select(),0)};
+  $('#addMaterialRecord').onclick=()=>{materials.unshift({id:`custom-${crypto.randomUUID()}`,name:'New material',cost:0});saveMaterials();render();setTimeout(()=>$('#materialsAdminBody input[data-i="0"]')?.select(),0)};
   $('#resetMaterials').onclick=()=>{if(confirm('Restore the complete original materials list and discard your material edits?')){materials=applySupplierData(structuredClone(BASE));saveMaterials();render()}};
 }
 async function init(){
