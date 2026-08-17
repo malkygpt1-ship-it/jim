@@ -1,5 +1,5 @@
-// Current IBT Decorative Chips products that did not exist in the legacy spreadsheet.
-// Verified against IBT product pages on 17 Aug 2026. Costs are current prices including VAT.
+// Current IBT decorative landscaping products that did not exist in the legacy spreadsheet.
+// Verified against exact IBT product pages on 17 Aug 2026. Costs are current prices including VAT.
 window.GF_CATALOG_ADDITIONS_DECORATIVE=[
 {id:"mat-566",name:"Blossom Decorative Chips 20mm 25kg Bag",cost:9.71},
 {id:"mat-567",name:"Blossom Decorative Chips 20mm IBT Bulk Bag",cost:226.98},
@@ -19,5 +19,10 @@ window.GF_CATALOG_ADDITIONS_DECORATIVE=[
 {id:"mat-581",name:"Moonstone Decorative Chip 20mm 25kg Bag",cost:8.00},
 {id:"mat-582",name:"Moray Diamond Mix IBT Bulk Bag",cost:198.00},
 {id:"mat-583",name:"Moreland Black Basalt Chip 20mm IBT Bulk Bag",cost:142.45},
-{id:"mat-584",name:"RED Granite Chip Correnie 20mm IBT Bulk Bag",cost:168.35}
+{id:"mat-584",name:"RED Granite Chip Correnie 20mm IBT Bulk Bag",cost:168.35},
+{id:"mat-585",name:"Scottish Beach Pebbles 14mm - 20mm IBT Bulk Bag",cost:132.37},
+{id:"mat-586",name:"Scottish Beach Pebbles 20mm - 30mm 25kg Bag",cost:7.68},
+{id:"mat-587",name:"Scottish Beach Pebbles 20mm - 30mm IBT Bulk Bag",cost:125.00},
+{id:"mat-588",name:"Scottish Beach Pebbles 40mm - 80mm 25kg Bag",cost:9.16},
+{id:"mat-589",name:"Scottish Beach Pebbles 50mm - 80mm IBT Bulk Bag",cost:145.68}
 ];
