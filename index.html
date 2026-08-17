@@ -28,11 +28,12 @@
 <main class="shell">
   <section class="card customer-card">
     <div class="section-head"><div><span class="step">1</span><h2>Customer & job</h2></div><span id="saveState" class="save-state">Saved locally</span></div>
-    <div class="grid cols-4">
+    <div class="grid customer-top-grid">
       <label>Estimate reference<input id="reference" value="GF 3072"></label>
       <label>Customer<input id="customer" value="Peter Nixon"></label>
       <label>Phone<input id="phone" placeholder="Customer phone"></label>
       <label>Date of enquiry<input id="date" type="date" value="2026-06-09"></label>
+      <label>Customer discount %<input id="discount" type="number" min="0" max="100" step="1" value="0"></label>
     </div>
     <label>Customer address<textarea id="address" rows="2">23 Clarendon Crescent, Linlithgow</textarea></label>
     <label>Type of work<textarea id="work" rows="3">Repoint wall, replace bricks where required, re-bed slabs where required.</textarea></label>
@@ -124,7 +125,6 @@
       <div class="summary-row"><span>Quoted materials</span><span id="sumMaterials">£0.00</span></div>
       <div class="summary-row"><span>Tools</span><span id="sumTools">£0.00</span></div>
       <div class="summary-row"><span>Labour</span><span id="sumLabour">£520.00</span></div>
-      <div class="summary-row discount"><label>Quote discount %</label><input id="discount" type="number" min="0" max="100" step="1" value="0"></div>
       <div class="grand"><span>Total quotation</span><strong id="grandTotal">£520.00</strong></div>
     </section>
   </section>
