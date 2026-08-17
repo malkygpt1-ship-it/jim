@@ -6,7 +6,7 @@
 <title>Good Foundations Materials</title>
 <script src="auth.js"></script>
 <link rel="stylesheet" href="styles.css" />
-<link rel="stylesheet" href="materials-book.css" />
+<link rel="stylesheet" href="materials-book.css?v=2" />
 </head>
 <body>
 <header class="topbar">
@@ -28,20 +28,25 @@
       <div><span class="step">£</span><h2>Materials price book</h2></div>
       <span id="materialsSaveState" class="save-state">Saved locally</span>
     </div>
-    <div class="materials-toolbar">
+    <div class="materials-toolbar materials-toolbar-view">
       <input id="materialsSearch" placeholder="Search material, supplier or SKU..." autocomplete="off">
       <label class="materials-filter"><input id="linkedOnly" type="checkbox"> Supplier linked only</label>
+      <div class="view-toggle" role="group" aria-label="Materials view">
+        <button type="button" class="view-btn" data-material-view="list">☰ List</button>
+        <button type="button" class="view-btn" data-material-view="grid">▦ Grid</button>
+      </div>
     </div>
     <div class="supplier-legend">
       <span><span class="supplier-dot linked"></span> Linked rows open the live supplier product page</span>
       <span><span class="supplier-dot pending"></span> Unlinked rows will be matched during the price update</span>
     </div>
-    <div class="table-wrap materials-book-wrap">
+    <div id="materialsListView" class="table-wrap materials-book-wrap">
       <table class="materials-admin-table materials-book-table">
         <thead><tr><th>Product</th><th>Description</th><th>Supplier SKU</th><th class="num">Cost price</th><th>Supplier</th><th></th></tr></thead>
         <tbody id="materialsAdminBody"></tbody>
       </table>
     </div>
+    <div id="materialsGridView" class="catalog-grid" hidden></div>
     <p class="muted materials-count" id="materialsCount"></p>
   </section>
 </main>
@@ -64,6 +69,6 @@
 <script src="supplier-data-decorative-slate.js"></script>
 <script src="supplier-data-decorative-wood-soil.js"></script>
 <script src="generated/ibt-supplier-data.js"></script>
-<script src="materials.js"></script>
+<script src="materials.js?v=2"></script>
 </body>
 </html>
