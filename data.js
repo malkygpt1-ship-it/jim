@@ -1,5 +1,6 @@
 // Full catalogue extracted from gf3093.xlsx.
 // Materials: Excel Materials!C3:E567 (565 legacy rows) plus verified current catalogue additions.
+// Current IBT Decorative Chips category coverage: 33/33 products represented as of 17 Aug 2026.
 // Tool hire: Materials!J3:L252 (250 rows).
 async function gfFetchCatalogPart(url){
   const r=await fetch(url,{cache:'no-store'});
