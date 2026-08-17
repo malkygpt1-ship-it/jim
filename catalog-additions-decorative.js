@@ -1,5 +1,5 @@
 // Current IBT decorative landscaping products that did not exist in the legacy spreadsheet.
-// Verified against exact IBT product pages on 17 Aug 2026. Costs are current prices including VAT.
+// Verified against exact/current IBT pages on 17 Aug 2026. Costs are prices including VAT.
 window.GF_CATALOG_ADDITIONS_DECORATIVE=[
 {id:"mat-566",name:"Blossom Decorative Chips 20mm 25kg Bag",cost:9.71},
 {id:"mat-567",name:"Blossom Decorative Chips 20mm IBT Bulk Bag",cost:226.98},
@@ -31,5 +31,7 @@ window.GF_CATALOG_ADDITIONS_DECORATIVE=[
 {id:"mat-593",name:"Green Slate 20mm IBT Bulk Bag",cost:142.97},
 {id:"mat-594",name:"Plum Slate 20mm 25kg Bag",cost:9.28},
 {id:"mat-595",name:"Plum Slate 20mm IBT Bulk Bag",cost:142.97},
-{id:"mat-596",name:"Plum Slate 40mm IBT Bulk Bag",cost:181.94}
+{id:"mat-596",name:"Plum Slate 40mm IBT Bulk Bag",cost:181.94},
+{id:"mat-597",name:"Decorative Bark General Purpose 1M3 IBT Bulk Bag",cost:126.91},
+{id:"mat-598",name:"Hardwood Play Wood Chip M3 IBT Bulk Bag",cost:110.62}
 ];
