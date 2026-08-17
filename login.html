@@ -5,36 +5,44 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Good Foundations Login</title>
 <link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="van-theme.css?v=1" />
 <style>
-.login-shell{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(135deg,#173d2b,#0d2b1d)}
-.login-card{width:min(420px,100%);background:white;border-radius:18px;padding:28px;box-shadow:0 20px 60px #06120b55}
-.login-card h1{margin:4px 0 6px}.login-card p{margin:0 0 22px;color:#69756f}.login-card label{margin:12px 0}.login-card button{width:100%;margin-top:12px;background:#173d2b;color:white}.login-error{min-height:20px;color:#9a3f3f;font-size:13px;margin-top:10px}
+.login-shell{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(135deg,#7891a4,#4f6f86)}
+.login-card{width:min(420px,100%);background:white;border-radius:18px;padding:28px;border:1px solid #bdcbd4;box-shadow:0 20px 60px #334b5b55}
+.login-card h1{margin:4px 0 6px}.login-card p{margin:0 0 22px;color:#64737d}.login-card label{margin:12px 0}.login-card button{width:100%;margin-top:12px;background:#a8cf6a;color:#243642}.login-error{min-height:20px;color:#9a3f3f;font-size:13px;margin-top:10px}.login-card .eyebrow{color:#5f8d3b!important}
 </style>
 </head>
 <body>
 <div class="login-shell">
   <form class="login-card" id="loginForm">
-    <div class="eyebrow" style="color:#173d2b">GOOD FOUNDATIONS</div>
+    <div class="eyebrow">GOOD FOUNDATIONS</div>
     <h1>Estimator Login</h1>
     <p>Sign in to access estimates and materials.</p>
     <label>Username<input id="username" autocomplete="username" autofocus></label>
     <label>Password<input id="password" type="password" autocomplete="current-password"></label>
-    <button type="submit">Log in</button>
+    <button type="submit" id="loginBtn">Log in</button>
     <div class="login-error" id="loginError"></div>
   </form>
 </div>
 <script>
 const AUTH_KEY='gf-authenticated';
 if(sessionStorage.getItem(AUTH_KEY)==='yes') location.replace('index.html');
-document.getElementById('loginForm').addEventListener('submit',e=>{
+document.getElementById('loginForm').addEventListener('submit',async e=>{
   e.preventDefault();
   const user=document.getElementById('username').value.trim();
   const pass=document.getElementById('password').value;
-  if(user==='jimrutherford' && pass==='celtic1888'){
+  const button=document.getElementById('loginBtn');
+  const error=document.getElementById('loginError');
+  error.textContent='';button.disabled=true;button.textContent='Signing in…';
+  try{
+    const response=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({username:user,password:pass})});
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(data.error||'Could not sign in.');
     sessionStorage.setItem(AUTH_KEY,'yes');
     location.replace('index.html');
-  }else{
-    document.getElementById('loginError').textContent='Incorrect username or password.';
+  }catch(err){
+    error.textContent=err.message||'Could not sign in.';
+    button.disabled=false;button.textContent='Log in';
   }
 });
 </script>
