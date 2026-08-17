@@ -14,7 +14,7 @@
   <div>
     <div class="eyebrow">GOOD FOUNDATIONS</div>
     <h1>Tools</h1>
-    <p>Search and maintain the tool-hire price book used by the estimator.</p>
+    <p>Search and maintain the tool-hire cost book used by the estimator.</p>
   </div>
   <div class="top-actions">
     <a class="ghost nav-btn" href="index.html">← Estimator</a>
@@ -26,19 +26,19 @@
 <main class="shell">
   <section class="card">
     <div class="section-head">
-      <div><span class="step">T</span><h2>Tools price book</h2></div>
+      <div><span class="step">T</span><h2>Tools cost book</h2></div>
       <span id="toolsSaveState" class="save-state">Saved locally</span>
     </div>
     <div class="materials-toolbar tools-toolbar">
       <input id="toolsSearch" placeholder="Search tool or hire item..." autocomplete="off">
     </div>
     <div class="supplier-legend tools-legend">
-      <span><span class="supplier-dot linked"></span> Cost price is your internal hire cost</span>
-      <span><span class="supplier-dot pending"></span> Sell price is the amount used by the estimator</span>
+      <span><span class="supplier-dot linked"></span> Cost price is the internal hire cost used by the estimator</span>
+      <span><span class="supplier-dot pending"></span> Customer price is calculated from the tool markup set on each estimate</span>
     </div>
     <div class="table-wrap materials-book-wrap">
       <table class="materials-admin-table materials-book-table tools-book-table">
-        <thead><tr><th>Item</th><th>Description</th><th class="num">Cost price</th><th class="num">Sell price</th><th class="num">Gross margin</th><th></th></tr></thead>
+        <thead><tr><th>Item</th><th>Description</th><th class="num">Cost price</th><th></th></tr></thead>
         <tbody id="toolsAdminBody"></tbody>
       </table>
     </div>
