@@ -12,7 +12,7 @@
   <div>
     <div class="eyebrow">GOOD FOUNDATIONS</div>
     <h1>Materials</h1>
-    <p>Manage the materials price book used by the estimator.</p>
+    <p>Search the price book, edit prices and open matched products at the supplier.</p>
   </div>
   <div class="top-actions">
     <a class="ghost nav-btn" href="index.html">← Estimator</a>
@@ -27,12 +27,17 @@
       <span id="materialsSaveState" class="save-state">Saved locally</span>
     </div>
     <div class="materials-toolbar">
-      <input id="materialsSearch" placeholder="Search materials..." autocomplete="off">
+      <input id="materialsSearch" placeholder="Search material, supplier or SKU..." autocomplete="off">
+      <label class="materials-filter"><input id="linkedOnly" type="checkbox"> Supplier linked only</label>
       <button class="text-btn" id="resetMaterials">Restore original list</button>
     </div>
-    <div class="table-wrap">
-      <table class="materials-admin-table">
-        <thead><tr><th>Description</th><th class="num">Cost price</th><th class="num">Sell price</th><th></th></tr></thead>
+    <div class="supplier-legend">
+      <span><span class="supplier-dot linked"></span> Linked rows open the live supplier product page</span>
+      <span><span class="supplier-dot pending"></span> Unlinked rows will be matched during the price update</span>
+    </div>
+    <div class="table-wrap materials-book-wrap">
+      <table class="materials-admin-table materials-book-table">
+        <thead><tr><th>Product</th><th>Description</th><th>Supplier SKU</th><th class="num">Cost price</th><th class="num">Sell price</th><th>Supplier</th><th></th></tr></thead>
         <tbody id="materialsAdminBody"></tbody>
       </table>
     </div>
@@ -40,6 +45,7 @@
   </section>
 </main>
 <script src="data.js"></script>
+<script src="supplier-data.js"></script>
 <script src="materials.js"></script>
 </body>
 </html>
