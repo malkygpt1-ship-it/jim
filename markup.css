@@ -2,5 +2,19 @@
 .summary-row.markup-control label{display:block}
 .summary-row.markup-control select{width:110px;padding:7px;text-align:right}
 .derived-price{padding:8px;text-align:right;font-weight:750;color:var(--brand);white-space:nowrap}
-body.pdf-export .markup-control{display:none!important}
-@media print{.markup-control{display:none!important}}
+.bom-table{min-width:900px}
+.bom-table .bom-unit-cost,.bom-table .bom-line-cost,.bom-table .bom-quote-total{white-space:nowrap}
+.bom-table .bom-cost-col{background:#fafbf9}
+.trade-control{display:grid;grid-template-columns:1fr 82px 92px;gap:8px;align-items:center}
+.trade-control label{display:block}
+.trade-control input{padding:7px;text-align:right}
+.trade-control span{text-align:right;color:var(--brand2);font-weight:750;white-space:nowrap}
+.bill-cost-row{background:var(--soft);margin:2px -8px;padding:9px 8px;border-radius:8px;border-bottom:0}
+body.pdf-export .markup-control,body.pdf-export .internal-summary,body.pdf-export .bom-cost-col,body.pdf-export .bom-screen-subtotal{display:none!important}
+body.pdf-export .bom-table{min-width:0!important;table-layout:fixed}
+body.pdf-export .bom-table th:first-child,body.pdf-export .bom-table td:first-child{width:54%}
+body.pdf-export .bom-table th:nth-child(2),body.pdf-export .bom-table td:nth-child(2){width:10%}
+body.pdf-export .bom-table th:nth-child(5),body.pdf-export .bom-table td:nth-child(5){width:18%}
+body.pdf-export .bom-table th:nth-child(6),body.pdf-export .bom-table td:nth-child(6){width:18%}
+@media(max-width:800px){.bom-table{min-width:820px}.trade-control{grid-template-columns:1fr 76px 88px}}
+@media print{.markup-control,.internal-summary,.bom-cost-col,.bom-screen-subtotal{display:none!important}.bom-table{min-width:0!important;table-layout:fixed}}
