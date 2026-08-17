@@ -10,12 +10,27 @@ async function gfDecodeCatalog(b64){
   const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
   return JSON.parse(await new Response(stream).text());
 }
+function gfLoadScript(url){
+  return new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src=url;s.onload=resolve;s.onerror=()=>reject(new Error(`${url} could not load`));
+    document.head.appendChild(s);
+  });
+}
+function gfApplySupplierCosts(materials){
+  const costs=window.GF_SUPPLIER_COSTS||{};
+  return materials.map(m=>{
+    const p=costs[m.id];
+    return p?{...m,cost:p.cost,supplierPriceIncVat:p.sourcePriceIncVat,supplierPriceCheckedAt:'2026-08-17',supplierPriceBasis:p.basis}:m;
+  });
+}
 window.GF_DATA_PROMISE=Promise.all([
   gfFetchCatalogPart('catalog/materials-1.b64'),
   gfFetchCatalogPart('catalog/materials-2.b64'),
-  gfFetchCatalogPart('catalog/tools.b64')
+  gfFetchCatalogPart('catalog/tools.b64'),
+  gfLoadScript('supplier-costs.js')
 ]).then(async([materials1,materials2,tools])=>({
-  catalogVersion:'2026-08-17-full-v1',
-  materials:await gfDecodeCatalog(materials1+materials2),
+  catalogVersion:'2026-08-17-ibt-incvat-v2',
+  materials:gfApplySupplierCosts(await gfDecodeCatalog(materials1+materials2)),
   tools:await gfDecodeCatalog(tools)
 }));
