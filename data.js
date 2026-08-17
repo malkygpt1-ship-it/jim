@@ -28,9 +28,9 @@ window.GF_DATA_PROMISE=Promise.all([
   gfFetchCatalogPart('catalog/materials-1.b64'),
   gfFetchCatalogPart('catalog/materials-2.b64'),
   gfFetchCatalogPart('catalog/tools.b64'),
-  gfLoadScript('supplier-costs.js')
+  gfLoadScript('supplier-costs.js').then(()=>gfLoadScript('supplier-costs-batch14.js'))
 ]).then(async([materials1,materials2,tools])=>({
-  catalogVersion:'2026-08-17-ibt-incvat-v2',
+  catalogVersion:'2026-08-17-ibt-incvat-v3',
   materials:gfApplySupplierCosts(await gfDecodeCatalog(materials1+materials2)),
   tools:await gfDecodeCatalog(tools)
 }));
