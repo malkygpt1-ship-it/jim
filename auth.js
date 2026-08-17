@@ -10,6 +10,25 @@
     document.head.appendChild(link);
   };
 
+  const loadStickyHeader = () => {
+    if (document.getElementById('gf-sticky-header')) return;
+    const style = document.createElement('style');
+    style.id = 'gf-sticky-header';
+    style.textContent = `
+      .topbar{
+        position:-webkit-sticky!important;
+        position:sticky!important;
+        top:0!important;
+        z-index:10000!important;
+        isolation:isolate;
+      }
+      body.pdf-export .topbar{position:static!important}
+      @media print{.topbar{position:static!important}}
+    `;
+    document.head.appendChild(style);
+  };
+
+  loadStickyHeader();
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', loadVanTheme, { once: true });
   } else {
