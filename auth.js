@@ -6,7 +6,7 @@
     if (document.querySelector('link[href^="van-theme.css"]')) return;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = 'van-theme.css?v=1';
+    link.href = 'van-theme.css?v=2';
     document.head.appendChild(link);
   };
 
