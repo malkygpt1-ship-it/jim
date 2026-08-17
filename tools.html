@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Good Foundations Tools</title>
+<script src="auth.js"></script>
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="materials-book.css" />
+<link rel="stylesheet" href="tools-book.css" />
+</head>
+<body>
+<header class="topbar">
+  <div>
+    <div class="eyebrow">GOOD FOUNDATIONS</div>
+    <h1>Tools</h1>
+    <p>Search and maintain the tool-hire price book used by the estimator.</p>
+  </div>
+  <div class="top-actions">
+    <a class="ghost nav-btn" href="index.html">← Estimator</a>
+    <a class="ghost nav-btn" href="materials.html">Materials</a>
+    <button class="ghost" onclick="GF_AUTH.logout()">Log out</button>
+    <button class="primary" id="addToolRecord">+ Add tool</button>
+  </div>
+</header>
+<main class="shell">
+  <section class="card">
+    <div class="section-head">
+      <div><span class="step">T</span><h2>Tools price book</h2></div>
+      <span id="toolsSaveState" class="save-state">Saved locally</span>
+    </div>
+    <div class="materials-toolbar tools-toolbar">
+      <input id="toolsSearch" placeholder="Search tool or hire item..." autocomplete="off">
+    </div>
+    <div class="supplier-legend tools-legend">
+      <span><span class="supplier-dot linked"></span> Cost price is your internal hire cost</span>
+      <span><span class="supplier-dot pending"></span> Sell price is the amount used by the estimator</span>
+    </div>
+    <div class="table-wrap materials-book-wrap">
+      <table class="materials-admin-table materials-book-table tools-book-table">
+        <thead><tr><th>Item</th><th>Description</th><th class="num">Cost price</th><th class="num">Sell price</th><th class="num">Gross margin</th><th></th></tr></thead>
+        <tbody id="toolsAdminBody"></tbody>
+      </table>
+    </div>
+    <p class="muted materials-count" id="toolsCount"></p>
+  </section>
+</main>
+<script src="data.js"></script>
+<script src="tool-catalog.js"></script>
+<script src="tools.js"></script>
+</body>
+</html>
