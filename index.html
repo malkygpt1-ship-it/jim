@@ -18,6 +18,7 @@
   </div>
   <div class="top-actions">
     <a class="ghost nav-btn" href="materials.html">Materials</a>
+    <a class="ghost nav-btn" href="tools.html">Tools</a>
     <button class="ghost" id="newBtn">New estimate</button>
     <button class="ghost" id="archiveBtn">Archive</button>
     <button class="ghost" onclick="GF_AUTH.logout()">Log out</button>
@@ -105,7 +106,7 @@
   </section>
 
   <section class="card">
-    <div class="section-head"><div><span class="step">3</span><h2>Tool hire</h2></div><button class="text-btn" id="addTool">+ Add tool</button></div>
+    <div class="section-head"><div><span class="step">3</span><h2><a class="section-title-link" href="tools.html">Tool hire <span>↗</span></a></h2></div><button class="text-btn" id="addTool">+ Add tool</button></div>
     <div class="table-wrap">
       <table><thead><tr><th>Description</th><th class="num">Qty</th><th class="num">Sell price</th><th class="num">Total</th><th></th></tr></thead><tbody id="toolsBody"></tbody></table>
     </div>
@@ -150,6 +151,7 @@
 <datalist id="toolOptions"></datalist>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="data.js"></script>
+<script src="tool-catalog.js"></script>
 <script src="app-v2.js"></script>
 <script src="bom-profit.js"></script>
 </body>
