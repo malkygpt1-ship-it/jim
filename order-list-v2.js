@@ -120,7 +120,7 @@
     const reference=document.getElementById('reference')?.value||'GF Estimate';
     try{
       await html2pdf().set({
-        margin:[8,8,8,8],
+        margin:[10,12,10,12],
         filename:`${safeFile(reference)} - Material Purchase List.pdf`,
         image:{type:'jpeg',quality:.98},
         html2canvas:{scale:2,useCORS:true,scrollY:0},
