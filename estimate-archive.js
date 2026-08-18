@@ -1,14 +1,59 @@
 (()=>{
+  const DB_NAME='good-foundations-estimator';
+  const DB_VERSION=1;
+  const STORE='estimateArchive';
   const money=n=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(Number(n)||0);
   const esc=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const parseMoney=s=>Number(String(s||'').replace(/[^0-9.-]/g,''))||0;
-  const safeName=(s,fallback)=>String(s||'').trim().replace(/[\\/:*?"<>|]+/g,'-').replace(/\s+/g,' ')||fallback;
+  const safeName=(s,fallback)=>String(s||'').trim().replace(/[\\/:*?"<>|]+/g,'-').replace(/\s+/g,' ').replace(/\s+-\s+/g,'-')||fallback;
 
   function toast(message,isError=false){
     let el=document.getElementById('archiveToast');
     if(!el){el=document.createElement('div');el.id='archiveToast';el.className='archive-toast';document.body.appendChild(el)}
     el.textContent=message;el.classList.toggle('error',!!isError);el.classList.add('show');
     clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),3200);
+  }
+
+  function openDb(){
+    return new Promise((resolve,reject)=>{
+      if(!('indexedDB' in window))return reject(new Error('This browser does not support the local estimate archive.'));
+      const req=indexedDB.open(DB_NAME,DB_VERSION);
+      req.onupgradeneeded=()=>{
+        const db=req.result;
+        if(!db.objectStoreNames.contains(STORE)){
+          const store=db.createObjectStore(STORE,{keyPath:'id'});
+          store.createIndex('savedAt','savedAt');
+          store.createIndex('reference','reference');
+        }
+      };
+      req.onsuccess=()=>resolve(req.result);
+      req.onerror=()=>reject(req.error||new Error('Could not open local estimate archive.'));
+    });
+  }
+
+  async function putArchive(record){
+    const db=await openDb();
+    try{
+      await new Promise((resolve,reject)=>{
+        const tx=db.transaction(STORE,'readwrite');
+        tx.objectStore(STORE).put(record);
+        tx.oncomplete=resolve;
+        tx.onerror=()=>reject(tx.error||new Error('Could not save estimate locally.'));
+        tx.onabort=()=>reject(tx.error||new Error('Could not save estimate locally.'));
+      });
+    }finally{db.close()}
+  }
+
+  async function getArchive(){
+    const db=await openDb();
+    try{
+      return await new Promise((resolve,reject)=>{
+        const tx=db.transaction(STORE,'readonly');
+        const req=tx.objectStore(STORE).getAll();
+        req.onsuccess=()=>resolve((req.result||[]).sort((a,b)=>new Date(b.savedAt)-new Date(a.savedAt)));
+        req.onerror=()=>reject(req.error||new Error('Could not load local archive.'));
+      });
+    }finally{db.close()}
   }
 
   function currentMaterialRows(){
@@ -97,57 +142,44 @@
     }finally{host.remove()}
   }
 
-  function blobToBase64(blob){
-    return new Promise((resolve,reject)=>{
-      const reader=new FileReader();
-      reader.onerror=()=>reject(reader.error||new Error('Could not read generated PDF'));
-      reader.onload=()=>resolve(String(reader.result||'').split(',')[1]||'');
-      reader.readAsDataURL(blob);
-    });
-  }
-
   async function saveEstimate(){
     const button=document.getElementById('printBtn');
     if(!button||button.disabled)return;
     const old=button.textContent;button.disabled=true;button.textContent='Saving estimate…';
     try{
+      const reference=(document.getElementById('reference')?.value||'').trim()||'Untitled';
+      const customer=(document.getElementById('customer')?.value||'').trim();
+      const refName=safeName(reference,'Untitled');
       const quoteBlob=await buildQuoteBlob();
       const bomBlob=await buildBomBlob();
-      const [quoteBase64,bomBase64]=await Promise.all([blobToBase64(quoteBlob),blobToBase64(bomBlob)]);
-      const response=await fetch('/api/estimates',{
-        method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          reference:document.getElementById('reference')?.value||'',
-          customer:document.getElementById('customer')?.value||'',
-          total:parseMoney(document.getElementById('grandTotal')?.textContent),
-          quoteBase64,bomBase64
-        })
+      const savedAt=new Date().toISOString();
+      const id=`${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
+      await putArchive({
+        id,reference,customer,savedAt,
+        total:parseMoney(document.getElementById('grandTotal')?.textContent),
+        quoteFilename:`${refName}-quote.pdf`,
+        bomFilename:`${refName}-bom.pdf`,
+        quoteBlob,bomBlob
       });
-      const data=await response.json().catch(()=>({}));
-      if(response.status===401){sessionStorage.removeItem('gf-authenticated');throw new Error('Your session has expired. Log in again before saving.')}
-      if(!response.ok)throw new Error(data.error||'Could not save estimate.');
-      toast('Estimate saved — Quote and BOM added to Archive');
-      const saveState=document.getElementById('saveState');if(saveState)saveState.textContent='Draft saved locally · estimate archived';
-    }catch(err){toast(err.message||'Could not save estimate.',true)}
+      toast(`Estimate ${reference} saved locally — Quote and BOM added to Archive`);
+      const saveState=document.getElementById('saveState');if(saveState)saveState.textContent='Saved locally · Quote + BOM archived';
+    }catch(err){toast(err.message||'Could not save estimate locally.',true)}
     finally{button.disabled=false;button.textContent=old}
   }
 
-  function fileUrl(path,filename){return `/api/estimate-file?pathname=${encodeURIComponent(path)}&filename=${encodeURIComponent(filename)}`}
-  function printUrl(path,filename){return `archive-viewer.html?pathname=${encodeURIComponent(path)}&filename=${encodeURIComponent(filename)}&print=1`}
+  function viewerUrl(id,type,print=false){
+    return `archive-local-viewer.html?id=${encodeURIComponent(id)}&type=${encodeURIComponent(type)}${print?'&print=1':''}`;
+  }
 
-  function renderCloudArchive(estimates){
+  function renderLocalArchive(estimates){
     const host=document.getElementById('archiveList');if(!host)return;
     host.innerHTML=estimates.length?estimates.map(row=>{
-      const ref=safeName(row.reference,'Untitled');
-      const customer=safeName(row.customer,'No customer');
-      const quoteName=`${ref} - ${customer} - Quote.pdf`;
-      const bomName=`${ref} - ${customer} - BOM.pdf`;
       const when=new Date(row.savedAt).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'});
       return `<article class="cloud-archive-entry">
         <div class="cloud-archive-main"><strong>${esc(row.reference||'Untitled')} · ${esc(row.customer||'No customer')}</strong><small>${esc(when)} · ${money(row.total)}</small></div>
         <div class="cloud-archive-docs">
-          <div class="archive-doc"><span>Customer quote</span><a href="${fileUrl(row.quotePath,quoteName)}" target="_blank" rel="noopener">Open</a><a href="${printUrl(row.quotePath,quoteName)}" target="_blank" rel="noopener">Print</a></div>
-          <div class="archive-doc"><span>BOM / purchase list</span><a href="${fileUrl(row.bomPath,bomName)}" target="_blank" rel="noopener">Open</a><a href="${printUrl(row.bomPath,bomName)}" target="_blank" rel="noopener">Print</a></div>
+          <div class="archive-doc"><span>${esc(row.quoteFilename||'Quote.pdf')}</span><a href="${viewerUrl(row.id,'quote')}" target="_blank" rel="noopener">Open</a><a href="${viewerUrl(row.id,'quote',true)}" target="_blank" rel="noopener">Print</a></div>
+          <div class="archive-doc"><span>${esc(row.bomFilename||'BOM.pdf')}</span><a href="${viewerUrl(row.id,'bom')}" target="_blank" rel="noopener">Open</a><a href="${viewerUrl(row.id,'bom',true)}" target="_blank" rel="noopener">Print</a></div>
         </div>
       </article>`;
     }).join(''):'<p class="muted">No saved estimates yet.</p>';
@@ -157,13 +189,8 @@
     const modal=document.getElementById('archiveModal'),host=document.getElementById('archiveList');
     if(!modal||!host)return;
     modal.classList.remove('hidden');host.innerHTML='<p class="muted">Loading saved estimates…</p>';
-    try{
-      const response=await fetch('/api/estimates',{credentials:'same-origin',cache:'no-store'});
-      const data=await response.json().catch(()=>({}));
-      if(response.status===401){sessionStorage.removeItem('gf-authenticated');throw new Error('Your session has expired. Log in again to view the archive.')}
-      if(!response.ok)throw new Error(data.error||'Could not load saved estimates.');
-      renderCloudArchive(data.estimates||[]);
-    }catch(err){host.innerHTML=`<div class="archive-error"><strong>Archive unavailable</strong><p>${esc(err.message||'Could not load saved estimates.')}</p></div>`}
+    try{renderLocalArchive(await getArchive())}
+    catch(err){host.innerHTML=`<div class="archive-error"><strong>Archive unavailable</strong><p>${esc(err.message||'Could not load local archive.')}</p></div>`}
   }
 
   const saveButton=document.getElementById('printBtn');
