@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Good Foundations Archive</title>
+<style>
+html,body{height:100%;margin:0;background:#eef3f5;font-family:Arial,sans-serif}.bar{height:56px;box-sizing:border-box;padding:0 18px;display:flex;align-items:center;justify-content:space-between;background:#486e80;color:white;border-bottom:3px solid #c6e67d}.bar strong{letter-spacing:.04em}.bar button{border:0;border-radius:9px;background:#c6e67d;color:#16343d;font-weight:800;padding:10px 14px;cursor:pointer}iframe{width:100%;height:calc(100% - 56px);border:0;background:white}.error{max-width:680px;margin:60px auto;background:white;border:1px solid #d7e0e4;border-radius:16px;padding:24px;color:#7c2525;box-shadow:0 12px 35px rgba(0,0,0,.08)}
+</style>
+</head>
+<body>
+<div class="bar"><strong id="title">GOOD FOUNDATIONS · ARCHIVE</strong><button id="printBtn">Print PDF</button></div>
+<iframe id="pdfFrame" title="Archived PDF"></iframe>
+<script>
+(()=>{
+ const DB_NAME='good-foundations-estimator',STORE='estimateArchive';
+ const params=new URLSearchParams(location.search),id=params.get('id'),type=params.get('type')==='bom'?'bom':'quote',autoPrint=params.get('print')==='1';
+ const frame=document.getElementById('pdfFrame'),title=document.getElementById('title'),printBtn=document.getElementById('printBtn');
+ function fail(msg){document.body.innerHTML='<div class="error"><strong>Could not open archived PDF</strong><p>'+String(msg||'The saved file could not be found.')+'</p></div>'}
+ function openDb(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB_NAME,1);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);r.onupgradeneeded=()=>{const db=r.result;if(!db.objectStoreNames.contains(STORE))db.createObjectStore(STORE,{keyPath:'id'})}})}
+ async function load(){
+   if(!id)return fail('Missing archive reference.');
+   try{
+     const db=await openDb();
+     const row=await new Promise((resolve,reject)=>{const tx=db.transaction(STORE,'readonly'),r=tx.objectStore(STORE).get(id);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)});db.close();
+     if(!row)return fail('This estimate is not stored in this browser.');
+     const blob=type==='bom'?row.bomBlob:row.quoteBlob,filename=type==='bom'?row.bomFilename:row.quoteFilename;
+     if(!(blob instanceof Blob))return fail('The saved PDF data is missing.');
+     title.textContent=`GOOD FOUNDATIONS · ${filename||'ARCHIVED PDF'}`;
+     const url=URL.createObjectURL(blob);frame.src=url;
+     const doPrint=()=>{try{frame.contentWindow.focus();frame.contentWindow.print()}catch{window.print()}};
+     printBtn.onclick=doPrint;
+     if(autoPrint)frame.onload=()=>setTimeout(doPrint,500);
+     addEventListener('beforeunload',()=>URL.revokeObjectURL(url),{once:true});
+   }catch(err){fail(err?.message||'Could not read the local archive.')}
+ }
+ load();
+})();
+</script>
+</body>
+</html>
