@@ -40,11 +40,39 @@
     if(typeof html2pdf!=='function')throw new Error('PDF generator did not load. Please refresh and try again.');
     try{if(typeof closeSuggestions==='function')closeSuggestions()}catch{}
     try{if(typeof recalc==='function')recalc()}catch{}
-    const customerDiscount=Number(document.getElementById('discount')?.value)||0;
+
+    const heading=document.querySelector('.topbar h1');
+    const oldHeading=heading?.textContent||'';
+    const discountSelect=document.getElementById('discount');
+    const discountLabel=discountSelect?.closest('label');
+    const oldDiscountDisplay=discountLabel?.style.display||'';
+    const customerGrid=document.querySelector('.customer-top-grid');
+    const oldGridTemplate=customerGrid?.style.gridTemplateColumns||'';
+    const customerDiscount=Math.min(100,Math.max(0,Number(discountSelect?.value)||0));
+
+    let discountRow=null;
+    if(heading)heading.textContent='Quotation';
+    if(discountLabel)discountLabel.style.display='none';
+    if(customerGrid)customerGrid.style.gridTemplateColumns='repeat(4,minmax(0,1fr))';
+
+    if(customerDiscount>0){
+      const quotedMaterials=parseMoney(document.getElementById('sumMaterials')?.textContent);
+      const quotedTools=parseMoney(document.getElementById('sumTools')?.textContent);
+      const labour=parseMoney(document.getElementById('sumLabour')?.textContent);
+      const beforeDiscount=quotedMaterials+quotedTools+labour;
+      const discountAmount=beforeDiscount*customerDiscount/100;
+      const grand=document.querySelector('.totals-card .grand');
+      if(grand){
+        discountRow=document.createElement('div');
+        discountRow.className='summary-row pdf-customer-discount-row';
+        discountRow.innerHTML=`<span>Customer discount (${customerDiscount}%)</span><span>−${money(discountAmount)}</span>`;
+        grand.parentNode.insertBefore(discountRow,grand);
+      }
+    }
+
     document.body.classList.add('pdf-export');
-    if(customerDiscount<=0)document.body.classList.add('no-customer-discount');
     try{
-      await new Promise(r=>setTimeout(r,70));
+      await new Promise(r=>setTimeout(r,90));
       return await pdfBlobFrom(document.body,{
         margin:[3,4,3,4],
         image:{type:'jpeg',quality:.95},
@@ -54,7 +82,10 @@
       });
     }finally{
       document.body.classList.remove('pdf-export');
-      document.body.classList.remove('no-customer-discount');
+      discountRow?.remove();
+      if(heading)heading.textContent=oldHeading;
+      if(discountLabel)discountLabel.style.display=oldDiscountDisplay;
+      if(customerGrid)customerGrid.style.gridTemplateColumns=oldGridTemplate;
     }
   }
 
