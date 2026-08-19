@@ -1,7 +1,4 @@
 (()=>{
-  const DB_NAME='good-foundations-estimator';
-  const DB_VERSION=1;
-  const STORE='estimateArchive';
   const money=n=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'}).format(Number(n)||0);
   const esc=s=>String(s??'').replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const parseMoney=s=>Number(String(s||'').replace(/[^0-9.-]/g,''))||0;
@@ -11,49 +8,7 @@
     let el=document.getElementById('archiveToast');
     if(!el){el=document.createElement('div');el.id='archiveToast';el.className='archive-toast';document.body.appendChild(el)}
     el.textContent=message;el.classList.toggle('error',!!isError);el.classList.add('show');
-    clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),3200);
-  }
-
-  function openDb(){
-    return new Promise((resolve,reject)=>{
-      if(!('indexedDB' in window))return reject(new Error('This browser does not support the local estimate archive.'));
-      const req=indexedDB.open(DB_NAME,DB_VERSION);
-      req.onupgradeneeded=()=>{
-        const db=req.result;
-        if(!db.objectStoreNames.contains(STORE)){
-          const store=db.createObjectStore(STORE,{keyPath:'id'});
-          store.createIndex('savedAt','savedAt');
-          store.createIndex('reference','reference');
-        }
-      };
-      req.onsuccess=()=>resolve(req.result);
-      req.onerror=()=>reject(req.error||new Error('Could not open local estimate archive.'));
-    });
-  }
-
-  async function putArchive(record){
-    const db=await openDb();
-    try{
-      await new Promise((resolve,reject)=>{
-        const tx=db.transaction(STORE,'readwrite');
-        tx.objectStore(STORE).put(record);
-        tx.oncomplete=resolve;
-        tx.onerror=()=>reject(tx.error||new Error('Could not save estimate locally.'));
-        tx.onabort=()=>reject(tx.error||new Error('Could not save estimate locally.'));
-      });
-    }finally{db.close()}
-  }
-
-  async function getArchive(){
-    const db=await openDb();
-    try{
-      return await new Promise((resolve,reject)=>{
-        const tx=db.transaction(STORE,'readonly');
-        const req=tx.objectStore(STORE).getAll();
-        req.onsuccess=()=>resolve((req.result||[]).sort((a,b)=>new Date(b.savedAt)-new Date(a.savedAt)));
-        req.onerror=()=>reject(req.error||new Error('Could not load local archive.'));
-      });
-    }finally{db.close()}
+    clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),3600);
   }
 
   function currentMaterialRows(){
@@ -142,55 +97,42 @@
     }finally{host.remove()}
   }
 
+  function downloadBlob(blob,filename){
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download=filename;a.style.display='none';
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),30000);
+  }
+
   async function saveEstimate(){
     const button=document.getElementById('printBtn');
     if(!button||button.disabled)return;
-    const old=button.textContent;button.disabled=true;button.textContent='Saving estimate…';
+    const old=button.textContent;button.disabled=true;button.textContent='Creating PDFs…';
     try{
       const reference=(document.getElementById('reference')?.value||'').trim()||'Untitled';
-      const customer=(document.getElementById('customer')?.value||'').trim();
       const refName=safeName(reference,'Untitled');
       const quoteBlob=await buildQuoteBlob();
       const bomBlob=await buildBomBlob();
-      const savedAt=new Date().toISOString();
-      const id=`${Date.now()}-${Math.random().toString(36).slice(2,8)}`;
-      await putArchive({
-        id,reference,customer,savedAt,
-        total:parseMoney(document.getElementById('grandTotal')?.textContent),
-        quoteFilename:`${refName}-quote.pdf`,
-        bomFilename:`${refName}-bom.pdf`,
-        quoteBlob,bomBlob
-      });
-      toast(`Estimate ${reference} saved locally — Quote and BOM added to Archive`);
-      const saveState=document.getElementById('saveState');if(saveState)saveState.textContent='Saved locally · Quote + BOM archived';
-    }catch(err){toast(err.message||'Could not save estimate locally.',true)}
+      downloadBlob(quoteBlob,`${refName}-quote.pdf`);
+      await new Promise(r=>setTimeout(r,250));
+      downloadBlob(bomBlob,`${refName}-bom.pdf`);
+      toast(`${reference}: Quote and BOM downloaded`);
+      const saveState=document.getElementById('saveState');if(saveState)saveState.textContent='PDFs downloaded locally';
+    }catch(err){toast(err.message||'Could not create PDFs.',true)}
     finally{button.disabled=false;button.textContent=old}
   }
 
-  function viewerUrl(id,type,print=false){
-    return `archive-local-viewer.html?id=${encodeURIComponent(id)}&type=${encodeURIComponent(type)}${print?'&print=1':''}`;
-  }
-
-  function renderLocalArchive(estimates){
-    const host=document.getElementById('archiveList');if(!host)return;
-    host.innerHTML=estimates.length?estimates.map(row=>{
-      const when=new Date(row.savedAt).toLocaleString('en-GB',{dateStyle:'medium',timeStyle:'short'});
-      return `<article class="cloud-archive-entry">
-        <div class="cloud-archive-main"><strong>${esc(row.reference||'Untitled')} · ${esc(row.customer||'No customer')}</strong><small>${esc(when)} · ${money(row.total)}</small></div>
-        <div class="cloud-archive-docs">
-          <div class="archive-doc"><span>${esc(row.quoteFilename||'Quote.pdf')}</span><a href="${viewerUrl(row.id,'quote')}" target="_blank" rel="noopener">Open</a><a href="${viewerUrl(row.id,'quote',true)}" target="_blank" rel="noopener">Print</a></div>
-          <div class="archive-doc"><span>${esc(row.bomFilename||'BOM.pdf')}</span><a href="${viewerUrl(row.id,'bom')}" target="_blank" rel="noopener">Open</a><a href="${viewerUrl(row.id,'bom',true)}" target="_blank" rel="noopener">Print</a></div>
-        </div>
-      </article>`;
-    }).join(''):'<p class="muted">No saved estimates yet.</p>';
-  }
-
-  async function openArchive(){
+  function openArchive(){
     const modal=document.getElementById('archiveModal'),host=document.getElementById('archiveList');
     if(!modal||!host)return;
-    modal.classList.remove('hidden');host.innerHTML='<p class="muted">Loading saved estimates…</p>';
-    try{renderLocalArchive(await getArchive())}
-    catch(err){host.innerHTML=`<div class="archive-error"><strong>Archive unavailable</strong><p>${esc(err.message||'Could not load local archive.')}</p></div>`}
+    modal.classList.remove('hidden');
+    host.innerHTML=`<div class="archive-download-info">
+      <strong>PDFs are saved to this device</strong>
+      <p>Each time you click <b>Save estimate</b>, two files are downloaded using the job reference:</p>
+      <p><b>JOB-REFERENCE-quote.pdf</b><br><b>JOB-REFERENCE-bom.pdf</b></p>
+      <p class="muted">Open your browser or device Downloads folder to view, print or move previous estimates. The estimator no longer stores PDF copies internally, so it cannot run out of archive space.</p>
+    </div>`;
   }
 
   const saveButton=document.getElementById('printBtn');
