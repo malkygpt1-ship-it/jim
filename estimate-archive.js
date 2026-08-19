@@ -40,7 +40,9 @@
     if(typeof html2pdf!=='function')throw new Error('PDF generator did not load. Please refresh and try again.');
     try{if(typeof closeSuggestions==='function')closeSuggestions()}catch{}
     try{if(typeof recalc==='function')recalc()}catch{}
+    const customerDiscount=Number(document.getElementById('discount')?.value)||0;
     document.body.classList.add('pdf-export');
+    if(customerDiscount<=0)document.body.classList.add('no-customer-discount');
     try{
       await new Promise(r=>setTimeout(r,70));
       return await pdfBlobFrom(document.body,{
@@ -50,7 +52,10 @@
         jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
         pagebreak:{mode:['avoid-all','css','legacy']}
       });
-    }finally{document.body.classList.remove('pdf-export')}
+    }finally{
+      document.body.classList.remove('pdf-export');
+      document.body.classList.remove('no-customer-discount');
+    }
   }
 
   function buildBomSheet(){
