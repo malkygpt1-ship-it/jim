@@ -4,7 +4,8 @@
    html2pdf has a genuine gutter on both sides and nothing is clipped. */
 body.pdf-export{width:720px;max-width:720px;margin:0 auto;font-size:11px;line-height:1.2;background:#fff;overflow:hidden}
 body.pdf-export .topbar{width:100%;padding:12px 20px 9px;border-bottom:1px solid var(--brand)}
-body.pdf-export .topbar h1{font-size:20px;margin:0}
+body.pdf-export .topbar h1{font-size:0;margin:0}
+body.pdf-export .topbar h1::after{content:'Quotation';font-size:20px}
 body.pdf-export .topbar p{font-size:9px;margin:1px 0 0}
 body.pdf-export .eyebrow{font-size:9px;letter-spacing:.16em}
 body.pdf-export .shell{width:100%;max-width:100%;padding:8px 20px 12px;margin:0}
@@ -14,8 +15,10 @@ body.pdf-export .section-head h2{font-size:13px}
 body.pdf-export .customer-card>label{margin-top:4px}
 body.pdf-export .grid{gap:5px}
 body.pdf-export label{font-size:8px;gap:1px}
-body.pdf-export input,body.pdf-export textarea{font-size:10px;line-height:1.15;padding:1px 0!important;min-height:0;resize:none;max-width:100%}
+body.pdf-export input,body.pdf-export select,body.pdf-export textarea{font-size:10px;line-height:1.15;padding:1px 0!important;min-height:0;resize:none;max-width:100%}
 body.pdf-export textarea{height:auto}
+body.pdf-export.no-customer-discount .customer-top-grid label:has(#discount){display:none!important}
+body.pdf-export.no-customer-discount .customer-top-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
 body.pdf-export table{width:100%;max-width:100%;min-width:0!important;font-size:9px;table-layout:fixed}
 body.pdf-export th,body.pdf-export td{padding:3px 4px;overflow:hidden}
 body.pdf-export th{font-size:8px}
